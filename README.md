@@ -14,6 +14,10 @@ A small utility library that provides a customized “BeanProvider”-style help
 
 It’s based on Apache DeltaSpike’s injection utilities, with two project-specific features:
 
+## Background / origin
+
+This project restores and adapts functionality that existed in Apache DeltaSpike (pre-2.x) and was removed as part of the DeltaSpike 2.x migration. It’s maintained here independently (not an official DeltaSpike module).
+
 - **Inject into non-CDI-managed objects** (field injection on an existing instance).
 - **Customize injection points at runtime** by:
   - removing specific annotations from specific fields (via an `ignoreMap`)
