@@ -24,6 +24,12 @@ package com.github.hazendaz.beanprovider.internal.deltaspike.metadata.builder;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.github.hazendaz.beanprovider.internal.deltaspike.literal.AlternativeLiteral;
+import com.github.hazendaz.beanprovider.internal.deltaspike.literal.AnyLiteral;
+import com.github.hazendaz.beanprovider.internal.deltaspike.literal.ApplicationScopedLiteral;
+import com.github.hazendaz.beanprovider.internal.deltaspike.literal.NamedLiteral;
+import com.github.hazendaz.beanprovider.internal.deltaspike.literal.TypedLiteral;
+
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.Observes;
 import jakarta.enterprise.inject.Alternative;
