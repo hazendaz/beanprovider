@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    SPDX-License-Identifier: Apache-2.0
+    Copyright 2011-2026 Hazendaz
+
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.github.hazendaz</groupId>
+        <artifactId>base-parent</artifactId>
+        <version>57</version>
+        <relativePath />
+    </parent>
+
+    <groupId>com.github.hazendaz.cdi</groupId>
+    <artifactId>beanprovider</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+
+    <name>beanprovider</name>
+    <description>Customized Deltaspike Bean Provider for PostInject and Ignore Injection Mapping.</description>
+
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>manual</distribution>
+            <comments>A business-friendly OSS license</comments>
+        </license>
+    </licenses>
+
+    <scm>
+        <connection>scm:git:https://github.com/hazendaz/beanprovider</connection>
+        <developerConnection>scm:git:ssh://git@github.com/hazendaz/beanprovider.git</developerConnection>
+        <tag>HEAD</tag>
+        <url>https://github.com/hazendaz/beanprovider</url>
+    </scm>
+
+    <distributionManagement>
+        <site>
+            <id>gh-pages-scm</id>
+            <name>gh-pages-scm</name>
+            <url>scm:git:ssh://git@github.com/hazendaz/beanprovider.git</url>
+        </site>
+    </distributionManagement>
+
+    <properties>
+        <!-- Maven compiler options -->
+        <java.version>11</java.version>
+        <java.release.version>11</java.release.version>
+        <javadoc.java.release.version>11</javadoc.java.release.version>
+
+        <!-- Reproducible Builds -->
+        <project.build.outputTimestamp>1768178295</project.build.outputTimestamp>
+
+        <!-- Automatic Module Name -->
+        <module.name>com.github.hazendaz.beanprovider</module.name>
+
+        <!-- Add opens for surefire -->
+        <argLine>--add-opens java.base/java.lang=ALL-UNNAMED</argLine>
+
+        <!-- Dependencies -->
+        <assertj.version>3.27.6</assertj.version>
+        <cdi.version>4.0.0</cdi.version>
+        <deltaspike.version>2.0.1</deltaspike.version>
+        <junit.version>6.0.2</junit.version>
+        <weld.version>4.0.5.Final</weld.version>
+        <ws.version>4.0.2</ws.version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.junit</groupId>
+                <artifactId>junit-bom</artifactId>
+                <version>${junit.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <dependencies>
+        <dependency>
+            <groupId>jakarta.enterprise</groupId>
+            <artifactId>jakarta.enterprise.cdi-api</artifactId>
+            <version>${cdi.version}</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.deltaspike.core</groupId>
+            <artifactId>deltaspike-core-impl</artifactId>
+            <version>${deltaspike.version}</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>jakarta.xml.ws</groupId>
+            <artifactId>jakarta.xml.ws-api</artifactId>
+            <version>${ws.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <version>${assertj.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.weld</groupId>
+            <artifactId>weld-junit5</artifactId>
+            <version>${weld.version}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+</project>
