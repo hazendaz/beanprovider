@@ -52,7 +52,7 @@ class AnnotatedTypeBuilderTest {
 
     @Test
     void testTypeLevelAnnotationRedefinition() {
-        AnnotatedTypeBuilder<Cat> builder = new AnnotatedTypeBuilder<Cat>();
+        AnnotatedTypeBuilder<Cat> builder = new AnnotatedTypeBuilder<>();
         builder.readFromType(Cat.class);
 
         AnnotatedType<Cat> cat = builder.create();
@@ -93,7 +93,7 @@ class AnnotatedTypeBuilderTest {
 
         {
             // test reading from an AnnotatedType
-            AnnotatedTypeBuilder<Cat> builder2 = new AnnotatedTypeBuilder<Cat>();
+            AnnotatedTypeBuilder<Cat> builder2 = new AnnotatedTypeBuilder<>();
             builder2.readFromType(cat);
             builder2.removeFromAll(Named.class);
 
@@ -105,7 +105,7 @@ class AnnotatedTypeBuilderTest {
         {
 
             // test reading from an AnnotatedType in non-overwrite mode
-            AnnotatedTypeBuilder<Cat> builder3 = new AnnotatedTypeBuilder<Cat>();
+            AnnotatedTypeBuilder<Cat> builder3 = new AnnotatedTypeBuilder<>();
             builder3.readFromType(cat, true);
             builder3.removeFromAll(Named.class);
 
@@ -119,7 +119,7 @@ class AnnotatedTypeBuilderTest {
 
     @Test
     void testAdditionOfAnnotation() {
-        final AnnotatedTypeBuilder<Cat> builder = new AnnotatedTypeBuilder<Cat>();
+        final AnnotatedTypeBuilder<Cat> builder = new AnnotatedTypeBuilder<>();
         builder.readFromType(Cat.class, true);
         builder.addToClass(new TypedLiteral());
 
@@ -129,7 +129,7 @@ class AnnotatedTypeBuilderTest {
 
     @Test
     void modifyAnnotationsOnConstructorParameter() throws NoSuchMethodException {
-        final AnnotatedTypeBuilder<Cat> builder = new AnnotatedTypeBuilder<Cat>();
+        final AnnotatedTypeBuilder<Cat> builder = new AnnotatedTypeBuilder<>();
         builder.readFromType(Cat.class, true);
         builder.removeFromConstructorParameter(Cat.class.getConstructor(String.class, String.class), 1, Default.class);
         builder.addToConstructorParameter(Cat.class.getConstructor(String.class, String.class), 1, new AnyLiteral());
