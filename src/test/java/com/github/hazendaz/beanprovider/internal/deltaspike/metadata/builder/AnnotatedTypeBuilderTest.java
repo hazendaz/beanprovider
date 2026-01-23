@@ -67,7 +67,7 @@ class AnnotatedTypeBuilderTest {
         cat = builder.create();
         assertThat(cat).isNotNull();
 
-        assertThat(cat.getAnnotations().size()).isEqualTo(3);
+        assertThat(cat.getAnnotations()).hasSize(3);
         assertThat(cat.isAnnotationPresent(Named.class)).isTrue();
         assertThat(cat.isAnnotationPresent(Alternative.class)).isTrue();
         assertThat(cat.isAnnotationPresent(ApplicationScoped.class)).isTrue();
@@ -99,7 +99,7 @@ class AnnotatedTypeBuilderTest {
 
             final AnnotatedType<Cat> noNameCat = builder2.create();
             assertThat(noNameCat.isAnnotationPresent(Named.class)).isFalse();
-            assertThat(noNameCat.getAnnotations().size()).isEqualTo(2);
+            assertThat(noNameCat.getAnnotations()).hasSize(2);
         }
 
         {
@@ -113,7 +113,7 @@ class AnnotatedTypeBuilderTest {
 
             final AnnotatedType<Cat> namedCat = builder3.create();
             assertThat(namedCat.isAnnotationPresent(Named.class)).isTrue();
-            assertThat(namedCat.getAnnotations().size()).isEqualTo(3);
+            assertThat(namedCat.getAnnotations()).hasSize(3);
         }
     }
 
@@ -137,13 +137,13 @@ class AnnotatedTypeBuilderTest {
         final AnnotatedType<Cat> catAnnotatedType = builder.create();
         Set<AnnotatedConstructor<Cat>> catCtors = catAnnotatedType.getConstructors();
 
-        assertThat(catCtors.size()).isEqualTo(2);
+        assertThat(catCtors).hasSize(2);
 
         for (AnnotatedConstructor<Cat> ctor : catCtors) {
             if (ctor.getParameters().size() == 2) {
                 List<AnnotatedParameter<Cat>> ctorParams = ctor.getParameters();
 
-                assertThat(ctorParams.get(1).getAnnotations().size()).isEqualTo(1);
+                assertThat(ctorParams.get(1).getAnnotations()).hasSize(1);
                 assertThat((AnyLiteral) ctorParams.get(1).getAnnotations().toArray()[0]).isEqualTo(new AnyLiteral());
             }
         }
@@ -155,9 +155,9 @@ class AnnotatedTypeBuilderTest {
         builder.readFromType(Small.class);
         final AnnotatedType<Small> smallAnnotatedType = builder.create();
 
-        assertThat(smallAnnotatedType.getMethods().size()).isEqualTo(1);
-        assertThat(smallAnnotatedType.getConstructors().size()).isEqualTo(0);
-        assertThat(smallAnnotatedType.getFields().size()).isEqualTo(0);
+        assertThat(smallAnnotatedType.getMethods()).hasSize(1);
+        assertThat(smallAnnotatedType.getConstructors()).isEmpty();
+        assertThat(smallAnnotatedType.getFields()).isEmpty();
     }
 
     @Test
