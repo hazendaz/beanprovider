@@ -66,7 +66,7 @@
         <cdi.version>4.0.0</cdi.version>
         <deltaspike.version>2.0.1</deltaspike.version>
         <junit.version>6.0.2</junit.version>
-        <weld.version>4.0.5.Final</weld.version>
+        <weld.version>5.0.3.Final</weld.version>
         <ws.version>4.0.2</ws.version>
     </properties>
 
