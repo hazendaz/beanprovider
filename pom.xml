@@ -21,7 +21,7 @@
     <version>1.0.0-SNAPSHOT</version>
 
     <name>beanprovider</name>
-    <description>Customized Deltaspike Bean Provider for PostInject and Ignore Injection Mapping.</description>
+    <description>A small utility library that provides a customized “BeanProvider”-style helper for Jakarta CDI.</description>
 
     <licenses>
         <license>
