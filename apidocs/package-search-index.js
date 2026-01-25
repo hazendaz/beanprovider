@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html","k":"18"},{"l":"com.github.hazendaz.beanprovider"},{"l":"com.github.hazendaz.beanprovider.internal.deltaspike.metadata.builder"}];updateSearchResults();

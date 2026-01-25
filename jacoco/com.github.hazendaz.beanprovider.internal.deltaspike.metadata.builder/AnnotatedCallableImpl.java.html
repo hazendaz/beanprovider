@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AnnotatedCallableImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">beanprovider</a> &gt; <a href="index.source.html" class="el_package">com.github.hazendaz.beanprovider.internal.deltaspike.metadata.builder</a> &gt; <span class="el_source">AnnotatedCallableImpl.java</span></div><h1>AnnotatedCallableImpl.java</h1><pre class="source lang-java linenums">/*
+ * SPDX-License-Identifier: Apache-2.0
+ * Copyright 2011-2026 Hazendaz
+ */
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements. See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership. The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * &quot;License&quot;); you may not use this file except in compliance
+ * with the License. You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+package com.github.hazendaz.beanprovider.internal.deltaspike.metadata.builder;
+
+import jakarta.enterprise.inject.spi.AnnotatedCallable;
+import jakarta.enterprise.inject.spi.AnnotatedParameter;
+import jakarta.enterprise.inject.spi.AnnotatedType;
+
+import java.lang.reflect.Member;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Implementation of {@link AnnotatedCallable}
+ */
+abstract class AnnotatedCallableImpl&lt;X, Y extends Member&gt; extends AnnotatedMemberImpl&lt;X, Y&gt;
+        implements AnnotatedCallable&lt;X&gt; {
+
+    private final List&lt;AnnotatedParameter&lt;X&gt;&gt; parameters;
+
+    protected AnnotatedCallableImpl(AnnotatedType&lt;X&gt; declaringType, Y member, Class&lt;?&gt; memberType,
+            Class&lt;?&gt;[] parameterTypes, Type[] genericTypes, AnnotationStore annotations,
+            Map&lt;Integer, AnnotationStore&gt; parameterAnnotations, Type genericType,
+            Map&lt;Integer, Type&gt; parameterTypeOverrides) {
+<span class="fc" id="L48">        super(declaringType, member, memberType, annotations, genericType, null);</span>
+<span class="fc" id="L49">        parameters = getAnnotatedParameters(this, parameterTypes, genericTypes, parameterAnnotations,</span>
+                parameterTypeOverrides);
+<span class="fc" id="L51">    }</span>
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List&lt;AnnotatedParameter&lt;X&gt;&gt; getParameters() {
+<span class="fc" id="L58">        return Collections.unmodifiableList(parameters);</span>
+    }
+
+    public AnnotatedParameter&lt;X&gt; getParameter(int index) {
+<span class="nc" id="L62">        return parameters.get(index);</span>
+
+    }
+
+    private static &lt;X, Y extends Member&gt; List&lt;AnnotatedParameter&lt;X&gt;&gt; getAnnotatedParameters(
+            AnnotatedCallableImpl&lt;X, Y&gt; callable, Class&lt;?&gt;[] parameterTypes, Type[] genericTypes,
+            Map&lt;Integer, AnnotationStore&gt; parameterAnnotations, Map&lt;Integer, Type&gt; parameterTypeOverrides) {
+<span class="fc" id="L69">        List&lt;AnnotatedParameter&lt;X&gt;&gt; parameters = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L70">        int len = parameterTypes.length;</span>
+
+<span class="fc bfc" id="L72" title="All 2 branches covered.">        for (int i = 0; i &lt; len; ++i) {</span>
+<span class="fc" id="L73">            AnnotationBuilder builder = new AnnotationBuilder();</span>
+<span class="pc bpc" id="L74" title="2 of 4 branches missed.">            if (parameterAnnotations != null &amp;&amp; parameterAnnotations.containsKey(i)) {</span>
+<span class="fc" id="L75">                builder.addAll(parameterAnnotations.get(i));</span>
+            }
+<span class="fc" id="L77">            Type over = null;</span>
+<span class="pc bpc" id="L78" title="1 of 2 branches missed.">            if (parameterTypeOverrides != null) {</span>
+<span class="nc" id="L79">                over = parameterTypeOverrides.get(i);</span>
+            }
+<span class="fc" id="L81">            AnnotatedParameterImpl&lt;X&gt; p = new AnnotatedParameterImpl&lt;&gt;(callable, parameterTypes[i], i, builder.create(),</span>
+                    genericTypes[i], over);
+
+<span class="fc" id="L84">            parameters.add(p);</span>
+        }
+<span class="fc" id="L86">        return parameters;</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

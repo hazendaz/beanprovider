@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<licensePluginReport goal="FORMAT" timestamp="1769370123466">
+    <module artifactId="beanprovider" groupId="com.github.hazendaz.cdi" version="1.0.0"/>
+    <files>
+        <file path=".mvn\extensions.xml" result="NOOP"/>
+        <file path=".mvn\settings.xml" result="NOOP"/>
+        <file path="NOTICE" result="UNKNOWN"/>
+        <file path="format.xml" result="NOOP"/>
+        <file path="pom.xml" result="NOOP"/>
+        <file path="src\main\java\com\github\hazendaz\beanprovider\BeanProvider.java" result="NOOP"/>
+        <file path="src\main\java\com\github\hazendaz\beanprovider\PostInject.java" result="NOOP"/>
+        <file path="src\main\java\com\github\hazendaz\beanprovider\internal\deltaspike\metadata\builder\AnnotatedCallableImpl.java" result="NOOP"/>
+        <file path="src\main\java\com\github\hazendaz\beanprovider\internal\deltaspike\metadata\builder\AnnotatedConstructorImpl.java" result="NOOP"/>
+        <file path="src\main\java\com\github\hazendaz\beanprovider\internal\deltaspike\metadata\builder\AnnotatedFieldImpl.java" result="NOOP"/>
+        <file path="src\main\java\com\github\hazendaz\beanprovider\internal\deltaspike\metadata\builder\AnnotatedImpl.java" result="NOOP"/>
+        <file path="src\main\java\com\github\hazendaz\beanprovider\internal\deltaspike\metadata\builder\AnnotatedMemberImpl.java" result="NOOP"/>
+        <file path="src\main\java\com\github\hazendaz\beanprovider\internal\deltaspike\metadata\builder\AnnotatedMethodImpl.java" result="NOOP"/>
+        <file path="src\main\java\com\github\hazendaz\beanprovider\internal\deltaspike\metadata\builder\AnnotatedParameterImpl.java" result="NOOP"/>
+        <file path="src\main\java\com\github\hazendaz\beanprovider\internal\deltaspike\metadata\builder\AnnotatedTypeBuilder.java" result="NOOP"/>
+        <file path="src\main\java\com\github\hazendaz\beanprovider\internal\deltaspike\metadata\builder\AnnotatedTypeImpl.java" result="NOOP"/>
+        <file path="src\main\java\com\github\hazendaz\beanprovider\internal\deltaspike\metadata\builder\AnnotationBuilder.java" result="NOOP"/>
+        <file path="src\main\java\com\github\hazendaz\beanprovider\internal\deltaspike\metadata\builder\AnnotationStore.java" result="NOOP"/>
+        <file path="src\main\java\com\github\hazendaz\beanprovider\internal\deltaspike\metadata\builder\package-info.java" result="NOOP"/>
+        <file path="src\main\java\com\github\hazendaz\beanprovider\package-info.java" result="NOOP"/>
+        <file path="src\site\site.xml" result="NOOP"/>
+        <file path="src\test\java\com\github\hazendaz\beanprovider\BeanProviderTest.java" result="NOOP"/>
+        <file path="src\test\java\com\github\hazendaz\beanprovider\DummyInjection.java" result="NOOP"/>
+        <file path="src\test\java\com\github\hazendaz\beanprovider\internal\deltaspike\literal\AlternativeLiteral.java" result="NOOP"/>
+        <file path="src\test\java\com\github\hazendaz\beanprovider\internal\deltaspike\literal\AnyLiteral.java" result="NOOP"/>
+        <file path="src\test\java\com\github\hazendaz\beanprovider\internal\deltaspike\literal\ApplicationScopedLiteral.java" result="NOOP"/>
+        <file path="src\test\java\com\github\hazendaz\beanprovider\internal\deltaspike\literal\NamedLiteral.java" result="NOOP"/>
+        <file path="src\test\java\com\github\hazendaz\beanprovider\internal\deltaspike\literal\TypedLiteral.java" result="NOOP"/>
+        <file path="src\test\java\com\github\hazendaz\beanprovider\internal\deltaspike\metadata\builder\AnnotatedTypeBuilderTest.java" result="NOOP"/>
+        <file path="src\test\java\com\github\hazendaz\beanprovider\internal\deltaspike\metadata\builder\Cat.java" result="NOOP"/>
+        <file path="src\test\java\com\github\hazendaz\beanprovider\internal\deltaspike\metadata\builder\Small.java" result="NOOP"/>
+        <file path="src\test\resources\META-INF\beans.xml" result="NOOP"/>
+    </files>
+</licensePluginReport>

@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AnnotationBuilder.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">beanprovider</a> &gt; <a href="index.source.html" class="el_package">com.github.hazendaz.beanprovider.internal.deltaspike.metadata.builder</a> &gt; <span class="el_source">AnnotationBuilder.java</span></div><h1>AnnotationBuilder.java</h1><pre class="source lang-java linenums">/*
+ * SPDX-License-Identifier: Apache-2.0
+ * Copyright 2011-2026 Hazendaz
+ */
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements. See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership. The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * &quot;License&quot;); you may not use this file except in compliance
+ * with the License. You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+package com.github.hazendaz.beanprovider.internal.deltaspike.metadata.builder;
+
+import java.lang.annotation.Annotation;
+import java.lang.reflect.AnnotatedElement;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+
+/**
+ * A store of annotations to be used {@link AnnotatedTypeBuilder} and other places where a collection of annotations
+ * needs manipulation.
+ */
+// this class is intentionally made package scope
+class AnnotationBuilder {
+    private final Map&lt;Class&lt;? extends Annotation&gt;, Annotation&gt; annotationMap;
+    private final Set&lt;Annotation&gt; annotationSet;
+
+    /**
+     * Default constructor.
+     */
+<span class="fc" id="L46">    AnnotationBuilder() {</span>
+<span class="fc" id="L47">        annotationMap = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L48">        annotationSet = new HashSet&lt;&gt;();</span>
+<span class="fc" id="L49">    }</span>
+
+    /**
+     * Adds the annotation to the collections.
+     *
+     * @param annotation
+     *            annotation to be added
+     *
+     * @return this
+     */
+    public AnnotationBuilder add(Annotation annotation) {
+<span class="pc bpc" id="L60" title="1 of 2 branches missed.">        if (annotation == null) {</span>
+<span class="nc" id="L61">            throw new IllegalArgumentException(&quot;annotation parameter must not be null&quot;);</span>
+        }
+<span class="fc" id="L63">        annotationSet.add(annotation);</span>
+<span class="fc" id="L64">        annotationMap.put(annotation.annotationType(), annotation);</span>
+<span class="fc" id="L65">        return this;</span>
+    }
+
+    /**
+     * Removes the given annotation from the collections.
+     *
+     * @param annotationType
+     *            to be removed
+     *
+     * @return this
+     */
+    public AnnotationBuilder remove(Class&lt;? extends Annotation&gt; annotationType) {
+<span class="pc bpc" id="L77" title="1 of 2 branches missed.">        if (annotationType == null) {</span>
+<span class="nc" id="L78">            throw new IllegalArgumentException(&quot;annotationType parameter must not be null&quot;);</span>
+        }
+
+<span class="fc" id="L81">        Iterator&lt;Annotation&gt; it = annotationSet.iterator();</span>
+<span class="fc bfc" id="L82" title="All 2 branches covered.">        while (it.hasNext()) {</span>
+<span class="fc" id="L83">            Annotation an = it.next();</span>
+<span class="fc bfc" id="L84" title="All 2 branches covered.">            if (annotationType.isAssignableFrom(an.annotationType())) {</span>
+<span class="fc" id="L85">                it.remove();</span>
+            }
+<span class="fc" id="L87">        }</span>
+<span class="fc" id="L88">        annotationMap.remove(annotationType);</span>
+<span class="fc" id="L89">        return this;</span>
+    }
+
+    /**
+     * Creates an {@link AnnotationStore} using the annotations from this instance.
+     *
+     * @return new AnnotationStore
+     */
+    public AnnotationStore create() {
+<span class="fc" id="L98">        return new AnnotationStore(annotationMap, annotationSet);</span>
+    }
+
+    /**
+     * Adds all annotations from the given collection
+     *
+     * @param annotations
+     *            collection of annotations to be added
+     *
+     * @return this
+     */
+    public AnnotationBuilder addAll(Collection&lt;Annotation&gt; annotations) {
+<span class="nc bnc" id="L110" title="All 2 branches missed.">        for (Annotation annotation : annotations) {</span>
+<span class="nc" id="L111">            add(annotation);</span>
+<span class="nc" id="L112">        }</span>
+<span class="nc" id="L113">        return this;</span>
+    }
+
+    /**
+     * Adds all annotations from an {@link AnnotationStore}.
+     *
+     * @param annotations
+     *            annotations to be added
+     *
+     * @return this
+     */
+    public AnnotationBuilder addAll(AnnotationStore annotations) {
+<span class="fc bfc" id="L125" title="All 2 branches covered.">        for (Annotation annotation : annotations.getAnnotations()) {</span>
+<span class="fc" id="L126">            add(annotation);</span>
+<span class="fc" id="L127">        }</span>
+<span class="fc" id="L128">        return this;</span>
+    }
+
+    /**
+     * Adds all annotations from the given {@link AnnotatedElement}.
+     *
+     * @param element
+     *            element containing annotations to be added
+     *
+     * @return this
+     */
+    public AnnotationBuilder addAll(AnnotatedElement element) {
+<span class="nc bnc" id="L140" title="All 2 branches missed.">        for (Annotation a : element.getAnnotations()) {</span>
+<span class="nc" id="L141">            add(a);</span>
+        }
+<span class="nc" id="L143">        return this;</span>
+    }
+
+    /**
+     * Getter.
+     */
+    public &lt;T extends Annotation&gt; T getAnnotation(Class&lt;T&gt; anType) {
+<span class="fc" id="L150">        return (T) annotationMap.get(anType);</span>
+    }
+
+    /**
+     * Simple check for an annotation.
+     */
+    public boolean isAnnotationPresent(Class&lt;?&gt; annotationType) {
+<span class="nc" id="L157">        return annotationMap.containsKey(annotationType);</span>
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString() {
+<span class="nc" id="L165">        return annotationSet.toString();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

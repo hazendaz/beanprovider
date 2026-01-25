@@ -1,0 +1,13 @@
+GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
+beanprovider,com.github.hazendaz.beanprovider,BeanProvider,0,132,0,14,0,31,0,9,0,2
+beanprovider,com.github.hazendaz.beanprovider.internal.deltaspike.metadata.builder,AnnotatedParameterImpl,3,16,0,0,1,5,1,2,1,2
+beanprovider,com.github.hazendaz.beanprovider.internal.deltaspike.metadata.builder,AnnotatedConstructorImpl,0,56,0,4,0,10,0,4,0,2
+beanprovider,com.github.hazendaz.beanprovider.internal.deltaspike.metadata.builder,AnnotatedTypeImpl,0,319,1,23,0,44,1,16,0,5
+beanprovider,com.github.hazendaz.beanprovider.internal.deltaspike.metadata.builder,AnnotationStore,9,26,0,0,4,7,1,4,1,4
+beanprovider,com.github.hazendaz.beanprovider.internal.deltaspike.metadata.builder,AnnotatedFieldImpl,0,11,0,0,0,2,0,1,0,1
+beanprovider,com.github.hazendaz.beanprovider.internal.deltaspike.metadata.builder,AnnotatedTypeBuilder,670,1114,88,104,100,183,78,53,21,14
+beanprovider,com.github.hazendaz.beanprovider.internal.deltaspike.metadata.builder,AnnotationBuilder,59,89,6,8,11,23,8,9,4,6
+beanprovider,com.github.hazendaz.beanprovider.internal.deltaspike.metadata.builder,AnnotatedImpl,13,57,2,4,3,15,2,7,0,6
+beanprovider,com.github.hazendaz.beanprovider.internal.deltaspike.metadata.builder,AnnotatedCallableImpl,12,79,3,5,2,15,4,4,1,3
+beanprovider,com.github.hazendaz.beanprovider.internal.deltaspike.metadata.builder,AnnotatedMemberImpl,8,16,0,0,2,5,2,2,2,2
+beanprovider,com.github.hazendaz.beanprovider.internal.deltaspike.metadata.builder,AnnotatedMethodImpl,0,16,0,0,0,3,0,1,0,1

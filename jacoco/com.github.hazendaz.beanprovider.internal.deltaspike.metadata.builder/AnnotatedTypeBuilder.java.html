@@ -1,0 +1,909 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AnnotatedTypeBuilder.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">beanprovider</a> &gt; <a href="index.source.html" class="el_package">com.github.hazendaz.beanprovider.internal.deltaspike.metadata.builder</a> &gt; <span class="el_source">AnnotatedTypeBuilder.java</span></div><h1>AnnotatedTypeBuilder.java</h1><pre class="source lang-java linenums">/*
+ * SPDX-License-Identifier: Apache-2.0
+ * Copyright 2011-2026 Hazendaz
+ */
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements. See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership. The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * &quot;License&quot;); you may not use this file except in compliance
+ * with the License. You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+package com.github.hazendaz.beanprovider.internal.deltaspike.metadata.builder;
+
+import jakarta.enterprise.inject.spi.Annotated;
+import jakarta.enterprise.inject.spi.AnnotatedConstructor;
+import jakarta.enterprise.inject.spi.AnnotatedField;
+import jakarta.enterprise.inject.spi.AnnotatedMethod;
+import jakarta.enterprise.inject.spi.AnnotatedParameter;
+import jakarta.enterprise.inject.spi.AnnotatedType;
+
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.Type;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.apache.deltaspike.core.util.ReflectionUtils;
+
+/**
+ * Builder to aid in creation of a new {@link AnnotatedType} for use in CDI life cycle events. Using the builder is
+ * typically done by reading the annotations from a {@link Class} or an {@link AnnotatedType}. Once the starting class
+ * or type has been added all of annotations can be modified: constructor, parameter, class, method and fields.
+ * &lt;p&gt;
+ * The AnnotatedTypeBuilder is not thread safe and shall not be used concurrently!
+ */
+public class AnnotatedTypeBuilder&lt;X&gt; {
+    private Class&lt;X&gt; javaClass;
+    private final AnnotationBuilder typeAnnotations;
+
+    private final Map&lt;Constructor&lt;?&gt;, AnnotationBuilder&gt; constructors;
+    private final Map&lt;Constructor&lt;?&gt;, Map&lt;Integer, AnnotationBuilder&gt;&gt; constructorParameters;
+    private final Map&lt;Constructor&lt;?&gt;, Map&lt;Integer, Type&gt;&gt; constructorParameterTypes;
+
+    private final Map&lt;Field, AnnotationBuilder&gt; fields;
+    private final Map&lt;Field, Type&gt; fieldTypes;
+
+    private final Map&lt;Method, AnnotationBuilder&gt; methods;
+    private final Map&lt;Method, Map&lt;Integer, AnnotationBuilder&gt;&gt; methodParameters;
+    private final Map&lt;Method, Map&lt;Integer, Type&gt;&gt; methodParameterTypes;
+
+    /**
+     * Create a new builder. A new builder has no annotations and no members.
+     *
+     * @see #readFromType(AnnotatedType)
+     * @see #readFromType(Class)
+     * @see #readFromType(AnnotatedType, boolean)
+     * @see #readFromType(Class, boolean)
+     */
+<span class="fc" id="L72">    public AnnotatedTypeBuilder() {</span>
+<span class="fc" id="L73">        typeAnnotations = new AnnotationBuilder();</span>
+<span class="fc" id="L74">        constructors = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L75">        constructorParameters = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L76">        constructorParameterTypes = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L77">        fields = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L78">        fieldTypes = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L79">        methods = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L80">        methodParameters = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L81">        methodParameterTypes = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L82">    }</span>
+
+    /**
+     * Add an annotation to the type declaration.
+     *
+     * @param annotation
+     *            the annotation instance to add
+     *
+     * @throws IllegalArgumentException
+     *             if the annotation is null
+     */
+    public AnnotatedTypeBuilder&lt;X&gt; addToClass(Annotation annotation) {
+<span class="fc" id="L94">        typeAnnotations.add(annotation);</span>
+<span class="fc" id="L95">        return this;</span>
+    }
+
+    /**
+     * Remove an annotation from the type
+     *
+     * @param annotationType
+     *            the annotation type to remove
+     *
+     * @throws IllegalArgumentException
+     *             if the annotationType
+     */
+    public AnnotatedTypeBuilder&lt;X&gt; removeFromClass(Class&lt;? extends Annotation&gt; annotationType) {
+<span class="fc" id="L108">        typeAnnotations.remove(annotationType);</span>
+<span class="fc" id="L109">        return this;</span>
+    }
+
+    /**
+     * Add an annotation to the specified field. If the field is not already present, it will be added.
+     *
+     * @param field
+     *            the field to add the annotation to
+     * @param annotation
+     *            the annotation to add
+     *
+     * @throws IllegalArgumentException
+     *             if the annotation is null
+     */
+    public AnnotatedTypeBuilder&lt;X&gt; addToField(Field field, Annotation annotation) {
+<span class="pc bpc" id="L124" title="1 of 2 branches missed.">        if (fields.get(field) == null) {</span>
+<span class="nc" id="L125">            fields.put(field, new AnnotationBuilder());</span>
+        }
+<span class="fc" id="L127">        fields.get(field).add(annotation);</span>
+<span class="fc" id="L128">        return this;</span>
+    }
+
+    /**
+     * Add an annotation to the specified field. If the field is not already present, it will be added.
+     *
+     * @param field
+     *            the field to add the annotation to
+     * @param annotation
+     *            the annotation to add
+     *
+     * @throws IllegalArgumentException
+     *             if the annotation is null
+     */
+    public AnnotatedTypeBuilder&lt;X&gt; addToField(AnnotatedField&lt;? super X&gt; field, Annotation annotation) {
+<span class="nc" id="L143">        return addToField(field.getJavaMember(), annotation);</span>
+    }
+
+    /**
+     * Remove an annotation from the specified field.
+     *
+     * @param field
+     *            the field to remove the annotation from
+     * @param annotationType
+     *            the annotation type to remove
+     *
+     * @throws IllegalArgumentException
+     *             if the annotationType is null or if the field is not currently declared on the type
+     */
+    public AnnotatedTypeBuilder&lt;X&gt; removeFromField(Field field, Class&lt;? extends Annotation&gt; annotationType) {
+<span class="pc bpc" id="L158" title="1 of 2 branches missed.">        if (fields.get(field) == null) {</span>
+<span class="nc" id="L159">            throw new IllegalArgumentException(&quot;field &quot; + field + &quot; not present on class &quot; + getJavaClass());</span>
+        } else {
+<span class="fc" id="L161">            fields.get(field).remove(annotationType);</span>
+        }
+<span class="fc" id="L163">        return this;</span>
+    }
+
+    /**
+     * Remove an annotation from the specified field.
+     *
+     * @param field
+     *            the field to remove the annotation from
+     * @param annotationType
+     *            the annotation type to remove
+     *
+     * @throws IllegalArgumentException
+     *             if the annotationType is null or if the field is not currently declared on the type
+     */
+    public AnnotatedTypeBuilder&lt;X&gt; removeFromField(AnnotatedField&lt;? super X&gt; field,
+            Class&lt;? extends Annotation&gt; annotationType) {
+<span class="nc" id="L179">        return removeFromField(field.getJavaMember(), annotationType);</span>
+    }
+
+    /**
+     * Add an annotation to the specified method. If the method is not already present, it will be added.
+     *
+     * @param method
+     *            the method to add the annotation to
+     * @param annotation
+     *            the annotation to add
+     *
+     * @throws IllegalArgumentException
+     *             if the annotation is null
+     */
+    public AnnotatedTypeBuilder&lt;X&gt; addToMethod(Method method, Annotation annotation) {
+<span class="nc bnc" id="L194" title="All 2 branches missed.">        if (methods.get(method) == null) {</span>
+<span class="nc" id="L195">            methods.put(method, new AnnotationBuilder());</span>
+        }
+<span class="nc" id="L197">        methods.get(method).add(annotation);</span>
+<span class="nc" id="L198">        return this;</span>
+    }
+
+    /**
+     * Add an annotation to the specified method. If the method is not already present, it will be added.
+     *
+     * @param method
+     *            the method to add the annotation to
+     * @param annotation
+     *            the annotation to add
+     *
+     * @throws IllegalArgumentException
+     *             if the annotation is null
+     */
+    public AnnotatedTypeBuilder&lt;X&gt; addToMethod(AnnotatedMethod&lt;? super X&gt; method, Annotation annotation) {
+<span class="nc" id="L213">        return addToMethod(method.getJavaMember(), annotation);</span>
+    }
+
+    /**
+     * Remove an annotation from the specified method.
+     *
+     * @param method
+     *            the method to remove the annotation from
+     * @param annotationType
+     *            the annotation type to remove
+     *
+     * @throws IllegalArgumentException
+     *             if the annotationType is null or if the method is not currently declared on the type
+     */
+    public AnnotatedTypeBuilder&lt;X&gt; removeFromMethod(Method method, Class&lt;? extends Annotation&gt; annotationType) {
+<span class="nc bnc" id="L228" title="All 2 branches missed.">        if (methods.get(method) == null) {</span>
+<span class="nc" id="L229">            throw new IllegalArgumentException(&quot;Method &quot; + method + &quot; not present on class&quot; + getJavaClass());</span>
+        } else {
+<span class="nc" id="L231">            methods.get(method).remove(annotationType);</span>
+        }
+<span class="nc" id="L233">        return this;</span>
+    }
+
+    /**
+     * Remove an annotation from the specified method.
+     *
+     * @param method
+     *            the method to remove the annotation from
+     * @param annotationType
+     *            the annotation type to remove
+     *
+     * @throws IllegalArgumentException
+     *             if the annotationType is null or if the method is not currently declared on the type
+     */
+    public AnnotatedTypeBuilder&lt;X&gt; removeFromMethod(AnnotatedMethod&lt;? super X&gt; method,
+            Class&lt;? extends Annotation&gt; annotationType) {
+<span class="nc" id="L249">        return removeFromMethod(method.getJavaMember(), annotationType);</span>
+    }
+
+    /**
+     * Add an annotation to the specified method parameter. If the method is not already present, it will be added. If
+     * the method parameter is not already present, it will be added.
+     *
+     * @param method
+     *            the method to add the annotation to
+     * @param position
+     *            the position of the parameter to add
+     * @param annotation
+     *            the annotation to add
+     *
+     * @throws IllegalArgumentException
+     *             if the annotation is null
+     */
+    public AnnotatedTypeBuilder&lt;X&gt; addToMethodParameter(Method method, int position, Annotation annotation) {
+<span class="nc bnc" id="L267" title="All 2 branches missed.">        if (!methods.containsKey(method)) {</span>
+<span class="nc" id="L268">            methods.put(method, new AnnotationBuilder());</span>
+        }
+<span class="nc bnc" id="L270" title="All 2 branches missed.">        if (methodParameters.get(method) == null) {</span>
+<span class="nc" id="L271">            methodParameters.put(method, new HashMap&lt;&gt;());</span>
+        }
+<span class="nc bnc" id="L273" title="All 2 branches missed.">        if (methodParameters.get(method).get(position) == null) {</span>
+<span class="nc" id="L274">            methodParameters.get(method).put(position, new AnnotationBuilder());</span>
+        }
+<span class="nc" id="L276">        methodParameters.get(method).get(position).add(annotation);</span>
+<span class="nc" id="L277">        return this;</span>
+    }
+
+    /**
+     * Remove an annotation from the specified method parameter.
+     *
+     * @param method
+     *            the method to remove the annotation from
+     * @param position
+     *            the position of the parameter to remove
+     * @param annotationType
+     *            the annotation type to remove
+     *
+     * @throws IllegalArgumentException
+     *             if the annotationType is null, if the method is not currently declared on the type or if the
+     *             parameter is not declared on the method
+     */
+    public AnnotatedTypeBuilder&lt;X&gt; removeFromMethodParameter(Method method, int position,
+            Class&lt;? extends Annotation&gt; annotationType) {
+<span class="nc bnc" id="L296" title="All 2 branches missed.">        if (methods.get(method) == null) {</span>
+<span class="nc" id="L297">            throw new IllegalArgumentException(&quot;Method &quot; + method + &quot; not present on class &quot; + getJavaClass());</span>
+        } else {
+<span class="nc bnc" id="L299" title="All 2 branches missed.">            if (methodParameters.get(method).get(position) == null) {</span>
+<span class="nc" id="L300">                throw new IllegalArgumentException(</span>
+<span class="nc" id="L301">                        String.format(&quot;parameter %s not present on method %s declared on class %s&quot;, method, position,</span>
+<span class="nc" id="L302">                                getJavaClass()));</span>
+            } else {
+<span class="nc" id="L304">                methodParameters.get(method).get(position).remove(annotationType);</span>
+            }
+        }
+<span class="nc" id="L307">        return this;</span>
+    }
+
+    /**
+     * Add an annotation to the specified constructor. If the constructor is not already present, it will be added.
+     *
+     * @param constructor
+     *            the constructor to add the annotation to
+     * @param annotation
+     *            the annotation to add
+     *
+     * @throws IllegalArgumentException
+     *             if the annotation is null
+     */
+    public AnnotatedTypeBuilder&lt;X&gt; addToConstructor(Constructor&lt;X&gt; constructor, Annotation annotation) {
+<span class="nc bnc" id="L322" title="All 2 branches missed.">        if (constructors.get(constructor) == null) {</span>
+<span class="nc" id="L323">            constructors.put(constructor, new AnnotationBuilder());</span>
+        }
+<span class="nc" id="L325">        constructors.get(constructor).add(annotation);</span>
+<span class="nc" id="L326">        return this;</span>
+    }
+
+    /**
+     * Add an annotation to the specified constructor. If the constructor is not already present, it will be added.
+     *
+     * @param constructor
+     *            the constructor to add the annotation to
+     * @param annotation
+     *            the annotation to add
+     *
+     * @throws IllegalArgumentException
+     *             if the annotation is null
+     */
+    public AnnotatedTypeBuilder&lt;X&gt; addToConstructor(AnnotatedConstructor&lt;X&gt; constructor, Annotation annotation) {
+<span class="nc" id="L341">        return addToConstructor(constructor.getJavaMember(), annotation);</span>
+    }
+
+    /**
+     * Remove an annotation from the specified constructor.
+     *
+     * @param constructor
+     *            the constructor to add the annotation to
+     * @param annotationType
+     *            the annotation to add
+     *
+     * @throws IllegalArgumentException
+     *             if the annotationType is null or if the constructor is not currently declared on the type
+     */
+    public AnnotatedTypeBuilder&lt;X&gt; removeFromConstructor(Constructor&lt;X&gt; constructor,
+            Class&lt;? extends Annotation&gt; annotationType) {
+<span class="nc bnc" id="L357" title="All 2 branches missed.">        if (constructors.get(constructor) != null) {</span>
+<span class="nc" id="L358">            constructors.get(constructor).remove(annotationType);</span>
+        }
+<span class="nc" id="L360">        return this;</span>
+    }
+
+    /**
+     * Remove an annotation from the specified constructor.
+     *
+     * @param constructor
+     *            the constructor to add the annotation to
+     * @param annotationType
+     *            the annotation to add
+     *
+     * @throws IllegalArgumentException
+     *             if the annotationType is null, if the annotation does not exist on the type or if the constructor is
+     *             not currently declared on the type
+     */
+    public AnnotatedTypeBuilder&lt;X&gt; removeFromConstructor(AnnotatedConstructor&lt;X&gt; constructor,
+            Class&lt;? extends Annotation&gt; annotationType) {
+<span class="nc" id="L377">        return removeFromConstructor(constructor.getJavaMember(), annotationType);</span>
+    }
+
+    /**
+     * Add an annotation to the specified constructor parameter. If the constructor is not already present, it will be
+     * added. If the constructor parameter is not already present, it will be added.
+     *
+     * @param constructor
+     *            the constructor to add the annotation to
+     * @param position
+     *            the position of the parameter to add
+     * @param annotation
+     *            the annotation to add
+     *
+     * @throws IllegalArgumentException
+     *             if the annotation is null
+     */
+    public AnnotatedTypeBuilder&lt;X&gt; addToConstructorParameter(Constructor&lt;X&gt; constructor, int position,
+            Annotation annotation) {
+<span class="pc bpc" id="L396" title="1 of 2 branches missed.">        if (!constructors.containsKey(constructor)) {</span>
+<span class="nc" id="L397">            constructors.put(constructor, new AnnotationBuilder());</span>
+        }
+<span class="pc bpc" id="L399" title="1 of 2 branches missed.">        if (constructorParameters.get(constructor) == null) {</span>
+<span class="nc" id="L400">            constructorParameters.put(constructor, new HashMap&lt;&gt;());</span>
+        }
+<span class="pc bpc" id="L402" title="1 of 2 branches missed.">        if (constructorParameters.get(constructor).get(position) == null) {</span>
+<span class="nc" id="L403">            constructorParameters.get(constructor).put(position, new AnnotationBuilder());</span>
+        }
+<span class="fc" id="L405">        constructorParameters.get(constructor).get(position).add(annotation);</span>
+<span class="fc" id="L406">        return this;</span>
+    }
+
+    /**
+     * Remove an annotation from the specified constructor parameter.
+     *
+     * @param constructor
+     *            the constructor to remove the annotation from
+     * @param position
+     *            the position of the parameter to remove
+     * @param annotationType
+     *            the annotation type to remove
+     *
+     * @throws IllegalArgumentException
+     *             if the annotationType is null, if the constructor is not currently declared on the type or if the
+     *             parameter is not declared on the constructor
+     */
+    public AnnotatedTypeBuilder&lt;X&gt; removeFromConstructorParameter(Constructor&lt;X&gt; constructor, int position,
+            Class&lt;? extends Annotation&gt; annotationType) {
+<span class="pc bpc" id="L425" title="1 of 2 branches missed.">        if (constructorParameters.get(constructor) != null</span>
+<span class="pc bpc" id="L426" title="1 of 2 branches missed.">                &amp;&amp; constructorParameters.get(constructor).get(position) != null) {</span>
+<span class="fc" id="L427">            constructorParameters.get(constructor).get(position).remove(annotationType);</span>
+        }
+<span class="fc" id="L429">        return this;</span>
+    }
+
+    /**
+     * Remove an annotation from the specified parameter.
+     *
+     * @param parameter
+     *            the parameter to remove the annotation from
+     * @param annotationType
+     *            the annotation type to remove
+     *
+     * @throws IllegalArgumentException
+     *             if the annotationType is null, if the callable which declares the parameter is not currently declared
+     *             on the type or if the parameter is not declared on either a constructor or a method
+     */
+    public AnnotatedTypeBuilder&lt;X&gt; removeFromParameter(AnnotatedParameter&lt;? super X&gt; parameter,
+            Class&lt;? extends Annotation&gt; annotationType) {
+<span class="nc bnc" id="L446" title="All 2 branches missed.">        if (parameter.getDeclaringCallable().getJavaMember() instanceof Method) {</span>
+<span class="nc" id="L447">            Method method = (Method) parameter.getDeclaringCallable().getJavaMember();</span>
+<span class="nc" id="L448">            return removeFromMethodParameter(method, parameter.getPosition(), annotationType);</span>
+        }
+<span class="nc bnc" id="L450" title="All 2 branches missed.">        if (parameter.getDeclaringCallable().getJavaMember() instanceof Constructor&lt;?&gt;) {</span>
+            @SuppressWarnings(&quot;unchecked&quot;)
+<span class="nc" id="L452">            Constructor&lt;X&gt; constructor = (Constructor&lt;X&gt;) parameter.getDeclaringCallable().getJavaMember();</span>
+<span class="nc" id="L453">            return removeFromConstructorParameter(constructor, parameter.getPosition(), annotationType);</span>
+        } else {
+<span class="nc" id="L455">            throw new IllegalArgumentException(&quot;Cannot remove from parameter &quot; + parameter</span>
+<span class="nc" id="L456">                    + &quot; - cannot operate on member &quot; + parameter.getDeclaringCallable().getJavaMember());</span>
+        }
+    }
+
+    /**
+     * Add an annotation to the specified parameter. If the callable which declares the parameter is not already
+     * present, it will be added. If the parameter is not already present on the callable, it will be added.
+     *
+     * @param parameter
+     *            the parameter to add the annotation to
+     * @param annotation
+     *            the annotation to add
+     *
+     * @throws IllegalArgumentException
+     *             if the annotation is null or if the parameter is not declared on either a constructor or a method
+     */
+    public AnnotatedTypeBuilder&lt;X&gt; addToParameter(AnnotatedParameter&lt;? super X&gt; parameter, Annotation annotation) {
+<span class="nc bnc" id="L473" title="All 2 branches missed.">        if (parameter.getDeclaringCallable().getJavaMember() instanceof Method) {</span>
+<span class="nc" id="L474">            Method method = (Method) parameter.getDeclaringCallable().getJavaMember();</span>
+<span class="nc" id="L475">            return addToMethodParameter(method, parameter.getPosition(), annotation);</span>
+        }
+<span class="nc bnc" id="L477" title="All 2 branches missed.">        if (parameter.getDeclaringCallable().getJavaMember() instanceof Constructor&lt;?&gt;) {</span>
+            @SuppressWarnings(&quot;unchecked&quot;)
+<span class="nc" id="L479">            Constructor&lt;X&gt; constructor = (Constructor&lt;X&gt;) parameter.getDeclaringCallable().getJavaMember();</span>
+<span class="nc" id="L480">            return addToConstructorParameter(constructor, parameter.getPosition(), annotation);</span>
+        } else {
+<span class="nc" id="L482">            throw new IllegalArgumentException(&quot;Cannot remove from parameter &quot; + parameter</span>
+<span class="nc" id="L483">                    + &quot; - cannot operate on member &quot; + parameter.getDeclaringCallable().getJavaMember());</span>
+        }
+    }
+
+    /**
+     * Remove annotations from the type, and all of it's members. If an annotation of the specified type appears on the
+     * type declaration, or any of it's members it will be removed.
+     *
+     * @param annotationType
+     *            the type of annotation to remove
+     *
+     * @throws IllegalArgumentException
+     *             if the annotationType is null
+     */
+    public AnnotatedTypeBuilder&lt;X&gt; removeFromAll(Class&lt;? extends Annotation&gt; annotationType) {
+<span class="pc bpc" id="L498" title="1 of 2 branches missed.">        if (annotationType == null) {</span>
+<span class="nc" id="L499">            throw new IllegalArgumentException(String.format(&quot;%s parameter must not be null&quot;, &quot;annotationType&quot;));</span>
+        }
+<span class="fc" id="L501">        removeFromClass(annotationType);</span>
+<span class="fc bfc" id="L502" title="All 2 branches covered.">        for (Map.Entry&lt;Field, AnnotationBuilder&gt; field : fields.entrySet()) {</span>
+<span class="fc" id="L503">            field.getValue().remove(annotationType);</span>
+<span class="fc" id="L504">        }</span>
+<span class="fc bfc" id="L505" title="All 2 branches covered.">        for (Map.Entry&lt;Method, AnnotationBuilder&gt; method : methods.entrySet()) {</span>
+<span class="fc" id="L506">            method.getValue().remove(annotationType);</span>
+<span class="fc bfc" id="L507" title="All 2 branches covered.">            if (methodParameters.get(method.getKey()) != null) {</span>
+<span class="fc bfc" id="L508" title="All 2 branches covered.">                for (Map.Entry&lt;Integer, AnnotationBuilder&gt; parameter : methodParameters.get(method.getKey())</span>
+<span class="fc" id="L509">                        .entrySet()) {</span>
+<span class="fc" id="L510">                    parameter.getValue().remove(annotationType);</span>
+<span class="fc" id="L511">                }</span>
+            }
+<span class="fc" id="L513">        }</span>
+<span class="fc bfc" id="L514" title="All 2 branches covered.">        for (Map.Entry&lt;Constructor&lt;?&gt;, AnnotationBuilder&gt; constructor : constructors.entrySet()) {</span>
+<span class="fc" id="L515">            constructor.getValue().remove(annotationType);</span>
+<span class="fc bfc" id="L516" title="All 2 branches covered.">            if (constructorParameters.get(constructor.getKey()) != null) {</span>
+<span class="fc bfc" id="L517" title="All 2 branches covered.">                for (Map.Entry&lt;Integer, AnnotationBuilder&gt; parameter : constructorParameters.get(constructor.getKey())</span>
+<span class="fc" id="L518">                        .entrySet()) {</span>
+<span class="fc" id="L519">                    parameter.getValue().remove(annotationType);</span>
+<span class="fc" id="L520">                }</span>
+            }
+<span class="fc" id="L522">        }</span>
+<span class="fc" id="L523">        return this;</span>
+    }
+
+    /**
+     * Reads in from an existing AnnotatedType. Any elements not present are added. The javaClass will be read in. If
+     * the annotation already exists on that element in the builder the read annotation will be used.
+     *
+     * @param type
+     *            the type to read from
+     *
+     * @throws IllegalArgumentException
+     *             if type is null
+     */
+    public AnnotatedTypeBuilder&lt;X&gt; readFromType(AnnotatedType&lt;X&gt; type) {
+<span class="fc" id="L537">        return readFromType(type, true);</span>
+    }
+
+    /**
+     * Reads in from an existing AnnotatedType. Any elements not present are added. The javaClass will be read in if
+     * overwrite is true. If the annotation already exists on that element in the builder, overwrite determines whether
+     * the original or read annotation will be used.
+     *
+     * @param type
+     *            the type to read from
+     * @param overwrite
+     *            if true, the read annotation will replace any existing annotation
+     *
+     * @throws IllegalArgumentException
+     *             if type is null
+     */
+    public AnnotatedTypeBuilder&lt;X&gt; readFromType(AnnotatedType&lt;X&gt; type, boolean overwrite) {
+<span class="pc bpc" id="L554" title="1 of 2 branches missed.">        if (type == null) {</span>
+<span class="nc" id="L555">            throw new IllegalArgumentException(String.format(&quot;%s parameter must not be null&quot;, &quot;type&quot;));</span>
+        }
+<span class="pc bpc" id="L557" title="1 of 4 branches missed.">        if (javaClass == null || overwrite) {</span>
+<span class="fc" id="L558">            javaClass = type.getJavaClass();</span>
+        }
+<span class="fc" id="L560">        mergeAnnotationsOnElement(type, overwrite, typeAnnotations);</span>
+<span class="fc bfc" id="L561" title="All 2 branches covered.">        for (AnnotatedField&lt;? super X&gt; field : type.getFields()) {</span>
+<span class="fc bfc" id="L562" title="All 2 branches covered.">            if (fields.get(field.getJavaMember()) == null) {</span>
+<span class="fc" id="L563">                fields.put(field.getJavaMember(), new AnnotationBuilder());</span>
+            }
+<span class="fc" id="L565">            mergeAnnotationsOnElement(field, overwrite, fields.get(field.getJavaMember()));</span>
+<span class="fc" id="L566">        }</span>
+<span class="fc bfc" id="L567" title="All 2 branches covered.">        for (AnnotatedMethod&lt;? super X&gt; method : type.getMethods()) {</span>
+<span class="fc bfc" id="L568" title="All 2 branches covered.">            if (methods.get(method.getJavaMember()) == null) {</span>
+<span class="fc" id="L569">                methods.put(method.getJavaMember(), new AnnotationBuilder());</span>
+            }
+<span class="fc" id="L571">            mergeAnnotationsOnElement(method, overwrite, methods.get(method.getJavaMember()));</span>
+<span class="fc bfc" id="L572" title="All 2 branches covered.">            for (AnnotatedParameter&lt;? super X&gt; p : method.getParameters()) {</span>
+<span class="fc bfc" id="L573" title="All 2 branches covered.">                if (methodParameters.get(method.getJavaMember()) == null) {</span>
+<span class="fc" id="L574">                    methodParameters.put(method.getJavaMember(), new HashMap&lt;&gt;());</span>
+                }
+<span class="fc bfc" id="L576" title="All 2 branches covered.">                if (methodParameters.get(method.getJavaMember()).get(p.getPosition()) == null) {</span>
+<span class="fc" id="L577">                    methodParameters.get(method.getJavaMember()).put(p.getPosition(), new AnnotationBuilder());</span>
+                }
+<span class="fc" id="L579">                mergeAnnotationsOnElement(p, overwrite,</span>
+<span class="fc" id="L580">                        methodParameters.get(method.getJavaMember()).get(p.getPosition()));</span>
+<span class="fc" id="L581">            }</span>
+<span class="fc" id="L582">        }</span>
+<span class="fc bfc" id="L583" title="All 2 branches covered.">        for (AnnotatedConstructor&lt;? super X&gt; constructor : type.getConstructors()) {</span>
+<span class="fc bfc" id="L584" title="All 2 branches covered.">            if (constructors.get(constructor.getJavaMember()) == null) {</span>
+<span class="fc" id="L585">                constructors.put(constructor.getJavaMember(), new AnnotationBuilder());</span>
+            }
+<span class="fc" id="L587">            mergeAnnotationsOnElement(constructor, overwrite, constructors.get(constructor.getJavaMember()));</span>
+<span class="fc bfc" id="L588" title="All 2 branches covered.">            for (AnnotatedParameter&lt;? super X&gt; p : constructor.getParameters()) {</span>
+<span class="fc bfc" id="L589" title="All 2 branches covered.">                if (constructorParameters.get(constructor.getJavaMember()) == null) {</span>
+<span class="fc" id="L590">                    constructorParameters.put(constructor.getJavaMember(), new HashMap&lt;&gt;());</span>
+                }
+<span class="fc bfc" id="L592" title="All 2 branches covered.">                if (constructorParameters.get(constructor.getJavaMember()).get(p.getPosition()) == null) {</span>
+<span class="fc" id="L593">                    constructorParameters.get(constructor.getJavaMember()).put(p.getPosition(),</span>
+                            new AnnotationBuilder());
+                }
+<span class="fc" id="L596">                mergeAnnotationsOnElement(p, overwrite,</span>
+<span class="fc" id="L597">                        constructorParameters.get(constructor.getJavaMember()).get(p.getPosition()));</span>
+<span class="fc" id="L598">            }</span>
+<span class="fc" id="L599">        }</span>
+<span class="fc" id="L600">        return this;</span>
+    }
+
+    /**
+     * Reads the annotations from an existing java type. Annotations already present will be overwritten
+     *
+     * @param type
+     *            the type to read from
+     *
+     * @throws IllegalArgumentException
+     *             if type is null
+     */
+    public AnnotatedTypeBuilder&lt;X&gt; readFromType(Class&lt;X&gt; type) {
+<span class="fc" id="L613">        return readFromType(type, true);</span>
+    }
+
+    /**
+     * Reads the annotations from an existing java type. If overwrite is true then existing annotations will be
+     * overwritten
+     *
+     * @param type
+     *            the type to read from
+     * @param overwrite
+     *            if true, the read annotation will replace any existing annotation
+     */
+    public AnnotatedTypeBuilder&lt;X&gt; readFromType(Class&lt;X&gt; type, boolean overwrite) {
+<span class="pc bpc" id="L626" title="1 of 2 branches missed.">        if (type == null) {</span>
+<span class="nc" id="L627">            throw new IllegalArgumentException(String.format(&quot;%s parameter must not be null&quot;, &quot;type&quot;));</span>
+        }
+<span class="pc bpc" id="L629" title="3 of 4 branches missed.">        if (javaClass == null || overwrite) {</span>
+<span class="fc" id="L630">            javaClass = type;</span>
+        }
+<span class="fc bfc" id="L632" title="All 2 branches covered.">        for (Annotation annotation : type.getAnnotations()) {</span>
+<span class="pc bpc" id="L633" title="3 of 4 branches missed.">            if (overwrite || !typeAnnotations.isAnnotationPresent(annotation.annotationType())) {</span>
+<span class="fc" id="L634">                typeAnnotations.add(annotation);</span>
+            }
+        }
+
+<span class="fc bfc" id="L638" title="All 2 branches covered.">        for (Field field : ReflectionUtils.getAllDeclaredFields(type)) {</span>
+<span class="fc" id="L639">            AnnotationBuilder annotationBuilder = fields.get(field);</span>
+<span class="pc bpc" id="L640" title="1 of 2 branches missed.">            if (annotationBuilder == null) {</span>
+<span class="fc" id="L641">                annotationBuilder = new AnnotationBuilder();</span>
+<span class="fc" id="L642">                fields.put(field, annotationBuilder);</span>
+            }
+
+<span class="fc" id="L645">            field.setAccessible(true);</span>
+
+<span class="fc bfc" id="L647" title="All 2 branches covered.">            for (Annotation annotation : field.getAnnotations()) {</span>
+<span class="pc bpc" id="L648" title="3 of 4 branches missed.">                if (overwrite || !annotationBuilder.isAnnotationPresent(annotation.annotationType())) {</span>
+<span class="fc" id="L649">                    annotationBuilder.add(annotation);</span>
+                }
+            }
+<span class="fc" id="L652">        }</span>
+
+<span class="fc bfc" id="L654" title="All 2 branches covered.">        for (Method method : ReflectionUtils.getAllDeclaredMethods(type)) {</span>
+<span class="fc" id="L655">            AnnotationBuilder annotationBuilder = methods.get(method);</span>
+<span class="pc bpc" id="L656" title="1 of 2 branches missed.">            if (annotationBuilder == null) {</span>
+<span class="fc" id="L657">                annotationBuilder = new AnnotationBuilder();</span>
+<span class="fc" id="L658">                methods.put(method, annotationBuilder);</span>
+            }
+
+<span class="fc" id="L661">            method.setAccessible(true);</span>
+
+<span class="fc bfc" id="L663" title="All 2 branches covered.">            for (Annotation annotation : method.getAnnotations()) {</span>
+<span class="pc bpc" id="L664" title="3 of 4 branches missed.">                if (overwrite || !annotationBuilder.isAnnotationPresent(annotation.annotationType())) {</span>
+<span class="fc" id="L665">                    annotationBuilder.add(annotation);</span>
+                }
+            }
+
+<span class="fc" id="L669">            Map&lt;Integer, AnnotationBuilder&gt; parameters = methodParameters.get(method);</span>
+<span class="pc bpc" id="L670" title="1 of 2 branches missed.">            if (parameters == null) {</span>
+<span class="fc" id="L671">                parameters = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L672">                methodParameters.put(method, parameters);</span>
+            }
+<span class="fc bfc" id="L674" title="All 2 branches covered.">            for (int i = 0; i &lt; method.getParameterTypes().length; ++i) {</span>
+<span class="fc" id="L675">                AnnotationBuilder parameterAnnotationBuilder = parameters.get(i);</span>
+<span class="pc bpc" id="L676" title="1 of 2 branches missed.">                if (parameterAnnotationBuilder == null) {</span>
+<span class="fc" id="L677">                    parameterAnnotationBuilder = new AnnotationBuilder();</span>
+<span class="fc" id="L678">                    parameters.put(i, parameterAnnotationBuilder);</span>
+                }
+<span class="fc bfc" id="L680" title="All 2 branches covered.">                for (Annotation annotation : method.getParameterAnnotations()[i]) {</span>
+<span class="pc bpc" id="L681" title="3 of 4 branches missed.">                    if (overwrite || !parameterAnnotationBuilder.isAnnotationPresent(annotation.annotationType())) {</span>
+<span class="fc" id="L682">                        parameterAnnotationBuilder.add(annotation);</span>
+                    }
+                }
+            }
+<span class="fc" id="L686">        }</span>
+
+<span class="fc bfc" id="L688" title="All 2 branches covered.">        for (Constructor&lt;?&gt; constructor : type.getDeclaredConstructors()) {</span>
+<span class="fc" id="L689">            AnnotationBuilder annotationBuilder = constructors.get(constructor);</span>
+<span class="pc bpc" id="L690" title="1 of 2 branches missed.">            if (annotationBuilder == null) {</span>
+<span class="fc" id="L691">                annotationBuilder = new AnnotationBuilder();</span>
+<span class="fc" id="L692">                constructors.put(constructor, annotationBuilder);</span>
+            }
+<span class="fc" id="L694">            constructor.setAccessible(true);</span>
+<span class="fc bfc" id="L695" title="All 2 branches covered.">            for (Annotation annotation : constructor.getAnnotations()) {</span>
+<span class="pc bpc" id="L696" title="3 of 4 branches missed.">                if (overwrite || !annotationBuilder.isAnnotationPresent(annotation.annotationType())) {</span>
+<span class="fc" id="L697">                    annotationBuilder.add(annotation);</span>
+                }
+            }
+<span class="fc" id="L700">            Map&lt;Integer, AnnotationBuilder&gt; mparams = constructorParameters.get(constructor);</span>
+<span class="pc bpc" id="L701" title="1 of 2 branches missed.">            if (mparams == null) {</span>
+<span class="fc" id="L702">                mparams = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L703">                constructorParameters.put(constructor, mparams);</span>
+            }
+<span class="fc bfc" id="L705" title="All 2 branches covered.">            for (int i = 0; i &lt; constructor.getParameterTypes().length; ++i) {</span>
+<span class="fc" id="L706">                AnnotationBuilder parameterAnnotationBuilder = mparams.get(i);</span>
+<span class="pc bpc" id="L707" title="1 of 2 branches missed.">                if (parameterAnnotationBuilder == null) {</span>
+<span class="fc" id="L708">                    parameterAnnotationBuilder = new AnnotationBuilder();</span>
+<span class="fc" id="L709">                    mparams.put(i, parameterAnnotationBuilder);</span>
+                }
+<span class="pc bpc" id="L711" title="1 of 2 branches missed.">                for (Annotation annotation : constructor.getParameterAnnotations()[i]) {</span>
+<span class="nc bnc" id="L712" title="All 4 branches missed.">                    if (overwrite || !parameterAnnotationBuilder.isAnnotationPresent(annotation.annotationType())) {</span>
+<span class="nc" id="L713">                        annotationBuilder.add(annotation);</span>
+                    }
+                }
+            }
+        }
+<span class="fc" id="L718">        return this;</span>
+    }
+
+    protected void mergeAnnotationsOnElement(Annotated annotated, boolean overwriteExisting,
+            AnnotationBuilder typeAnnotations) {
+<span class="fc bfc" id="L723" title="All 2 branches covered.">        for (Annotation annotation : annotated.getAnnotations()) {</span>
+<span class="fc bfc" id="L724" title="All 2 branches covered.">            if (typeAnnotations.getAnnotation(annotation.annotationType()) != null) {</span>
+<span class="pc bpc" id="L725" title="1 of 2 branches missed.">                if (overwriteExisting) {</span>
+<span class="nc" id="L726">                    typeAnnotations.remove(annotation.annotationType());</span>
+<span class="nc" id="L727">                    typeAnnotations.add(annotation);</span>
+                }
+            } else {
+<span class="fc" id="L730">                typeAnnotations.add(annotation);</span>
+            }
+<span class="fc" id="L732">        }</span>
+<span class="fc" id="L733">    }</span>
+
+    /**
+     * Create an {@link AnnotatedType}. Any public members present on the underlying class and not overridden by the
+     * builder will be automatically added.
+     */
+    public AnnotatedType&lt;X&gt; create() {
+<span class="fc" id="L740">        Map&lt;Constructor&lt;?&gt;, Map&lt;Integer, AnnotationStore&gt;&gt; constructorParameterAnnotations = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L741">        Map&lt;Constructor&lt;?&gt;, AnnotationStore&gt; constructorAnnotations = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L742">        Map&lt;Method, Map&lt;Integer, AnnotationStore&gt;&gt; methodParameterAnnotations = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L743">        Map&lt;Method, AnnotationStore&gt; methodAnnotations = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L744">        Map&lt;Field, AnnotationStore&gt; fieldAnnotations = new HashMap&lt;&gt;();</span>
+
+<span class="fc bfc" id="L746" title="All 2 branches covered.">        for (Map.Entry&lt;Field, AnnotationBuilder&gt; field : fields.entrySet()) {</span>
+<span class="fc" id="L747">            fieldAnnotations.put(field.getKey(), field.getValue().create());</span>
+<span class="fc" id="L748">        }</span>
+
+<span class="fc bfc" id="L750" title="All 2 branches covered.">        for (Map.Entry&lt;Method, AnnotationBuilder&gt; method : methods.entrySet()) {</span>
+<span class="fc" id="L751">            methodAnnotations.put(method.getKey(), method.getValue().create());</span>
+<span class="fc" id="L752">        }</span>
+<span class="fc bfc" id="L753" title="All 2 branches covered.">        for (Map.Entry&lt;Method, Map&lt;Integer, AnnotationBuilder&gt;&gt; parameters : methodParameters.entrySet()) {</span>
+<span class="fc" id="L754">            Map&lt;Integer, AnnotationStore&gt; parameterAnnotations = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L755">            methodParameterAnnotations.put(parameters.getKey(), parameterAnnotations);</span>
+<span class="fc bfc" id="L756" title="All 2 branches covered.">            for (Map.Entry&lt;Integer, AnnotationBuilder&gt; parameter : parameters.getValue().entrySet()) {</span>
+<span class="fc" id="L757">                parameterAnnotations.put(parameter.getKey(), parameter.getValue().create());</span>
+<span class="fc" id="L758">            }</span>
+<span class="fc" id="L759">        }</span>
+
+<span class="fc bfc" id="L761" title="All 2 branches covered.">        for (Map.Entry&lt;Constructor&lt;?&gt;, AnnotationBuilder&gt; constructor : constructors.entrySet()) {</span>
+<span class="fc" id="L762">            constructorAnnotations.put(constructor.getKey(), constructor.getValue().create());</span>
+<span class="fc" id="L763">        }</span>
+<span class="fc bfc" id="L764" title="All 2 branches covered.">        for (Map.Entry&lt;Constructor&lt;?&gt;, Map&lt;Integer, AnnotationBuilder&gt;&gt; parameters : constructorParameters.entrySet()) {</span>
+<span class="fc" id="L765">            Map&lt;Integer, AnnotationStore&gt; parameterAnnotations = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L766">            constructorParameterAnnotations.put(parameters.getKey(), parameterAnnotations);</span>
+<span class="fc bfc" id="L767" title="All 2 branches covered.">            for (Map.Entry&lt;Integer, AnnotationBuilder&gt; parameter : parameters.getValue().entrySet()) {</span>
+<span class="fc" id="L768">                parameterAnnotations.put(parameter.getKey(), parameter.getValue().create());</span>
+<span class="fc" id="L769">            }</span>
+<span class="fc" id="L770">        }</span>
+
+<span class="fc" id="L772">        return new AnnotatedTypeImpl&lt;X&gt;(javaClass, typeAnnotations.create(), fieldAnnotations, methodAnnotations,</span>
+                methodParameterAnnotations, constructorAnnotations, constructorParameterAnnotations, fieldTypes,
+                methodParameterTypes, constructorParameterTypes);
+    }
+
+    /**
+     * Override the declared type of a field
+     *
+     * @param field
+     *            the field to override the type on
+     * @param type
+     *            the new type of the field
+     *
+     * @throws IllegalArgumentException
+     *             if field or type is null
+     */
+    public void overrideFieldType(Field field, Type type) {
+<span class="nc bnc" id="L789" title="All 2 branches missed.">        if (field == null) {</span>
+<span class="nc" id="L790">            throw new IllegalArgumentException(String.format(&quot;%s parameter must not be null&quot;, &quot;field&quot;));</span>
+        }
+<span class="nc bnc" id="L792" title="All 2 branches missed.">        if (type == null) {</span>
+<span class="nc" id="L793">            throw new IllegalArgumentException(String.format(&quot;%s parameter must not be null&quot;, &quot;type&quot;));</span>
+        }
+<span class="nc" id="L795">        fieldTypes.put(field, type);</span>
+<span class="nc" id="L796">    }</span>
+
+    /**
+     * Override the declared type of a field
+     *
+     * @param field
+     *            the field to override the type on
+     * @param type
+     *            the new type of the field
+     *
+     * @throws IllegalArgumentException
+     *             if field or type is null
+     */
+    public void overrideFieldType(AnnotatedField&lt;? super X&gt; field, Type type) {
+<span class="nc" id="L810">        overrideFieldType(field.getJavaMember(), type);</span>
+<span class="nc" id="L811">    }</span>
+
+    /**
+     * Override the declared type of a method parameter
+     *
+     * @param method
+     *            the method to override the parameter type on
+     * @param position
+     *            the position of the parameter to override the type on
+     * @param type
+     *            the new type of the parameter
+     *
+     * @throws IllegalArgumentException
+     *             if parameter or type is null
+     */
+    public AnnotatedTypeBuilder&lt;X&gt; overrideMethodParameterType(Method method, int position, Type type) {
+<span class="nc bnc" id="L827" title="All 2 branches missed.">        if (method == null) {</span>
+<span class="nc" id="L828">            throw new IllegalArgumentException(String.format(&quot;%s parameter must not be null&quot;, &quot;method&quot;));</span>
+        }
+<span class="nc bnc" id="L830" title="All 2 branches missed.">        if (type == null) {</span>
+<span class="nc" id="L831">            throw new IllegalArgumentException(String.format(&quot;%s parameter must not be null&quot;, &quot;type&quot;));</span>
+        }
+<span class="nc bnc" id="L833" title="All 2 branches missed.">        if (methodParameterTypes.get(method) == null) {</span>
+<span class="nc" id="L834">            methodParameterTypes.put(method, new HashMap&lt;&gt;());</span>
+        }
+<span class="nc" id="L836">        methodParameterTypes.get(method).put(position, type);</span>
+<span class="nc" id="L837">        return this;</span>
+    }
+
+    /**
+     * Override the declared type of a constructor parameter
+     *
+     * @param constructor
+     *            the constructor to override the parameter type on
+     * @param position
+     *            the position of the parameter to override the type on
+     * @param type
+     *            the new type of the parameter
+     *
+     * @throws IllegalArgumentException
+     *             if parameter or type is null
+     */
+    public AnnotatedTypeBuilder&lt;X&gt; overrideConstructorParameterType(Constructor&lt;X&gt; constructor, int position,
+            Type type) {
+<span class="nc bnc" id="L855" title="All 2 branches missed.">        if (constructor == null) {</span>
+<span class="nc" id="L856">            throw new IllegalArgumentException(String.format(&quot;%s parameter must not be null&quot;, &quot;constructor&quot;));</span>
+        }
+<span class="nc bnc" id="L858" title="All 2 branches missed.">        if (type == null) {</span>
+<span class="nc" id="L859">            throw new IllegalArgumentException(String.format(&quot;%s parameter must not be null&quot;, &quot;type&quot;));</span>
+        }
+<span class="nc bnc" id="L861" title="All 2 branches missed.">        if (constructorParameterTypes.get(constructor) == null) {</span>
+<span class="nc" id="L862">            constructorParameterTypes.put(constructor, new HashMap&lt;&gt;());</span>
+        }
+<span class="nc" id="L864">        constructorParameterTypes.get(constructor).put(position, type);</span>
+<span class="nc" id="L865">        return this;</span>
+    }
+
+    /**
+     * Override the declared type of a parameter.
+     *
+     * @param parameter
+     *            the parameter to override the type on
+     * @param type
+     *            the new type of the parameter
+     *
+     * @throws IllegalArgumentException
+     *             if parameter or type is null
+     */
+    public AnnotatedTypeBuilder&lt;X&gt; overrideParameterType(AnnotatedParameter&lt;? super X&gt; parameter, Type type) {
+<span class="nc bnc" id="L880" title="All 2 branches missed.">        if (parameter.getDeclaringCallable().getJavaMember() instanceof Method) {</span>
+<span class="nc" id="L881">            Method method = (Method) parameter.getDeclaringCallable().getJavaMember();</span>
+<span class="nc" id="L882">            return overrideMethodParameterType(method, parameter.getPosition(), type);</span>
+        }
+<span class="nc bnc" id="L884" title="All 2 branches missed.">        if (parameter.getDeclaringCallable().getJavaMember() instanceof Constructor&lt;?&gt;) {</span>
+            @SuppressWarnings(&quot;unchecked&quot;)
+<span class="nc" id="L886">            Constructor&lt;X&gt; constructor = (Constructor&lt;X&gt;) parameter.getDeclaringCallable().getJavaMember();</span>
+<span class="nc" id="L887">            return overrideConstructorParameterType(constructor, parameter.getPosition(), type);</span>
+        } else {
+<span class="nc" id="L889">            throw new IllegalArgumentException(&quot;Cannot remove from parameter &quot; + parameter</span>
+<span class="nc" id="L890">                    + &quot; - cannot operate on member &quot; + parameter.getDeclaringCallable().getJavaMember());</span>
+        }
+    }
+
+    /**
+     * getter for the class
+     */
+    public Class&lt;X&gt; getJavaClass() {
+<span class="nc" id="L898">        return javaClass;</span>
+    }
+
+    /**
+     * setter for the class
+     */
+    public AnnotatedTypeBuilder&lt;X&gt; setJavaClass(Class&lt;X&gt; javaClass) {
+<span class="nc" id="L905">        this.javaClass = javaClass;</span>
+<span class="nc" id="L906">        return this;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>
