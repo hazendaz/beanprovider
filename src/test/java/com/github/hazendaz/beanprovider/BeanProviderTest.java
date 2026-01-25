@@ -30,6 +30,9 @@ class BeanProviderTest {
     @WeldSetup
     public WeldInitiator weld = WeldInitiator.of(new Weld());
 
+    @PostInject
+    private DummyInjection dummyInjection;
+
     @Test
     void injectFields_empty_map() {
         final Map<String, Class<? extends Annotation>> ignoreMap = new ConcurrentHashMap<>();
@@ -59,6 +62,14 @@ class BeanProviderTest {
     @Test
     void injectFields_null_map() {
         Assertions.assertThrows(IllegalArgumentException.class, () -> BeanProvider.injectFields(this, null));
+    }
+
+    @Test
+    void injectFields_successful_injection() {
+        Assertions.assertNull(this.dummyInjection);
+        final Map<String, Class<? extends Annotation>> ignoreMap = new ConcurrentHashMap<>();
+        Assertions.assertSame(this, BeanProvider.injectFields(this, ignoreMap));
+        Assertions.assertEquals("DummyInjection", this.dummyInjection.getName());
     }
 
     @Test
