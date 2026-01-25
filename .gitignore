@@ -1,9 +1,16 @@
+# Eclipse
+.apt_generated_tests
 .classpath
 .factorypath
-.idea
-*.iml
 .project
 .settings
-target
-/.apt_generated_tests/
+
+# Intellij
+.idea
+*.iml
+
+# Maven
 .mvn/wrapper/maven-wrapper.jar
+*.releaseBackup
+release.properties
+target
