@@ -11,6 +11,7 @@ import jakarta.xml.ws.WebServiceContext;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -62,6 +63,20 @@ class BeanProviderTest {
     @Test
     void injectFields_null_map() {
         Assertions.assertThrows(IllegalArgumentException.class, () -> BeanProvider.injectFields(this, null));
+    }
+
+    @Test
+    void injectFields_null_map_key() {
+        final Map<String, Class<? extends Annotation>> ignoreMap = new HashMap<>();
+        ignoreMap.put(null, Inject.class);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> BeanProvider.injectFields(this, ignoreMap));
+    }
+
+    @Test
+    void injectFields_null_map_property() {
+        final Map<String, Class<? extends Annotation>> ignoreMap = new HashMap<>();
+        ignoreMap.put("inject", null);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> BeanProvider.injectFields(this, ignoreMap));
     }
 
     @Test
