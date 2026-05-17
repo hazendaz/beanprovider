@@ -26,7 +26,6 @@ import jakarta.enterprise.inject.spi.Annotated;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -52,7 +51,7 @@ abstract class AnnotatedImpl implements Annotated {
             }
         } else {
             this.type = overriddenType;
-            typeClosure = Collections.singleton(overriddenType);
+            typeClosure = Set.of(overriddenType);
         }
 
         if (annotations == null) {
