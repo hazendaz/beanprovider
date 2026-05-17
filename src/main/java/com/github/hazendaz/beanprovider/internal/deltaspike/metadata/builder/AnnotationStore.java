@@ -22,8 +22,6 @@
  */
 package com.github.hazendaz.beanprovider.internal.deltaspike.metadata.builder;
 
-import static java.util.Collections.emptyMap;
-import static java.util.Collections.emptySet;
 import static java.util.Collections.unmodifiableSet;
 
 import java.lang.annotation.Annotation;
@@ -43,8 +41,8 @@ class AnnotationStore {
     }
 
     AnnotationStore() {
-        annotationMap = emptyMap();
-        annotationSet = emptySet();
+        annotationMap = Map.of();
+        annotationSet = Set.of();
     }
 
     <T extends Annotation> T getAnnotation(Class<T> annotationType) {
