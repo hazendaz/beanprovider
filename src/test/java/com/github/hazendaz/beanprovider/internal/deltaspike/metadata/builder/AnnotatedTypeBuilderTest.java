@@ -23,6 +23,7 @@
 package com.github.hazendaz.beanprovider.internal.deltaspike.metadata.builder;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.github.hazendaz.beanprovider.internal.deltaspike.literal.AlternativeLiteral;
 import com.github.hazendaz.beanprovider.internal.deltaspike.literal.AnyLiteral;
@@ -33,15 +34,22 @@ import com.github.hazendaz.beanprovider.internal.deltaspike.literal.TypedLiteral
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.Observes;
 import jakarta.enterprise.inject.Alternative;
+import jakarta.enterprise.inject.Any;
 import jakarta.enterprise.inject.Default;
 import jakarta.enterprise.inject.Typed;
 import jakarta.enterprise.inject.spi.AnnotatedConstructor;
+import jakarta.enterprise.inject.spi.AnnotatedField;
 import jakarta.enterprise.inject.spi.AnnotatedMethod;
 import jakarta.enterprise.inject.spi.AnnotatedParameter;
 import jakarta.enterprise.inject.spi.AnnotatedType;
+import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.util.AnnotationLiteral;
+import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -180,6 +188,94 @@ class AnnotatedTypeBuilderTest {
 
         AnnotatedType<EnumWithParams> newAt = builder.create();
         assertThat(newAt).isNotNull();
+    }
+
+    @Test
+    void testOverloadsAndTypeOverrides() throws Exception {
+        final AnnotatedType<Cat> sourceType = new AnnotatedTypeBuilder<Cat>().readFromType(Cat.class).create();
+
+        final AnnotatedField<? super Cat> colorField = sourceType.getFields().stream()
+                .filter(f -> "color".equals(f.getJavaMember().getName())).findFirst().orElseThrow();
+        final AnnotatedMethod<? super Cat> setupMethod = sourceType.getMethods().stream()
+                .filter(m -> "setup".equals(m.getJavaMember().getName())).findFirst().orElseThrow();
+        final AnnotatedMethod<? super Cat> observerMethod = sourceType.getMethods().stream()
+                .filter(m -> "doSomeObservation".equals(m.getJavaMember().getName())).findFirst().orElseThrow();
+        final AnnotatedConstructor<Cat> injectCtor = sourceType.getConstructors().stream()
+                .filter(c -> c.getParameters().size() == 2).findFirst().orElseThrow();
+        final AnnotatedParameter<? super Cat> observerParameter = observerMethod.getParameters().get(0);
+        final AnnotatedParameter<? super Cat> constructorParameter = injectCtor.getParameters().get(1);
+
+        final AnnotatedTypeBuilder<Cat> builder = new AnnotatedTypeBuilder<>();
+        builder.readFromType(Cat.class, true);
+        builder.addToField(colorField, new NamedLiteral("field-name"));
+        builder.removeFromField(colorField, Named.class);
+        builder.addToMethod(setupMethod, new NamedLiteral("method-name"));
+        builder.removeFromMethod(setupMethod, Named.class);
+        builder.addToMethodParameter(observerMethod.getJavaMember(), 1, new AnyLiteral());
+        builder.removeFromMethodParameter(observerMethod.getJavaMember(), 1, Any.class);
+        builder.addToConstructor(injectCtor, new jakarta.enterprise.util.AnnotationLiteral<Inject>() {
+        });
+        builder.removeFromConstructor(injectCtor, Inject.class);
+        builder.addToConstructorParameter(injectCtor.getJavaMember(), 1, new AnyLiteral());
+        builder.removeFromConstructorParameter(injectCtor.getJavaMember(), 1, Any.class);
+        builder.addToParameter(observerParameter, new NamedLiteral("observer-parameter"));
+        builder.removeFromParameter(observerParameter, Named.class);
+        builder.addToParameter(constructorParameter, new AnyLiteral());
+        builder.removeFromParameter(constructorParameter, Any.class);
+        builder.overrideFieldType(colorField, Object.class);
+        builder.overrideParameterType(observerParameter, Object.class);
+        builder.overrideParameterType(constructorParameter, Object.class);
+
+        assertThat(builder.getJavaClass()).isEqualTo(Cat.class);
+        assertThat(builder.setJavaClass(Cat.class)).isSameAs(builder);
+
+        final AnnotatedType<Cat> updatedType = builder.create();
+        final AnnotatedField<? super Cat> updatedColorField = updatedType.getFields().stream()
+                .filter(f -> "color".equals(f.getJavaMember().getName())).findFirst().orElseThrow();
+        final AnnotatedMethod<? super Cat> updatedObserverMethod = updatedType.getMethods().stream()
+                .filter(m -> "doSomeObservation".equals(m.getJavaMember().getName())).findFirst().orElseThrow();
+        final AnnotatedConstructor<Cat> updatedInjectCtor = updatedType.getConstructors().stream()
+                .filter(c -> c.getParameters().size() == 2).findFirst().orElseThrow();
+
+        assertThat(updatedColorField.getBaseType()).isEqualTo(Object.class);
+        assertThat(updatedObserverMethod.getParameters().get(0).getBaseType()).isEqualTo(Object.class);
+        assertThat(updatedInjectCtor.getParameters().get(1).getBaseType()).isEqualTo(Object.class);
+    }
+
+    @Test
+    void testValidationAndMissingMembers() throws Exception {
+        final AnnotatedTypeBuilder<Cat> builder = new AnnotatedTypeBuilder<>();
+        final Method toStringMethod = Object.class.getDeclaredMethod("toString");
+        final Method observerMethod = Cat.class.getDeclaredMethod("doSomeObservation", Cat.class, BeanManager.class);
+        final Constructor<Cat> injectCtor = Cat.class.getConstructor(String.class, String.class);
+        final Field colorField = Cat.class.getDeclaredField("color");
+        final Field valueField = String.class.getDeclaredField("value");
+
+        assertThatThrownBy(() -> builder.readFromType((Class<Cat>) null)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> builder.readFromType((AnnotatedType<Cat>) null))
+                .isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> builder.removeFromAll(null)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> builder.removeFromField(valueField, Named.class))
+                .isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> builder.removeFromMethod(toStringMethod, Named.class))
+                .isInstanceOf(IllegalArgumentException.class);
+
+        builder.readFromType(Cat.class, true);
+        assertThatThrownBy(() -> builder.removeFromMethodParameter(observerMethod, 2, Named.class))
+                .isInstanceOf(IllegalArgumentException.class);
+
+        assertThatThrownBy(() -> builder.overrideFieldType((Field) null, Object.class))
+                .isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> builder.overrideFieldType(colorField, null))
+                .isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> builder.overrideMethodParameterType(null, 0, Object.class))
+                .isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> builder.overrideMethodParameterType(observerMethod, 0, null))
+                .isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> builder.overrideConstructorParameterType(null, 0, Object.class))
+                .isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> builder.overrideConstructorParameterType(injectCtor, 0, null))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     public static class TypeWithParamsInCt {
