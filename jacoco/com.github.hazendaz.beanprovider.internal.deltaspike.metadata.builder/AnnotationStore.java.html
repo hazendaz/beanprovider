@@ -22,8 +22,6 @@
  */
 package com.github.hazendaz.beanprovider.internal.deltaspike.metadata.builder;
 
-import static java.util.Collections.emptyMap;
-import static java.util.Collections.emptySet;
 import static java.util.Collections.unmodifiableSet;
 
 import java.lang.annotation.Annotation;
@@ -37,26 +35,26 @@ class AnnotationStore {
     private final Map&lt;Class&lt;? extends Annotation&gt;, Annotation&gt; annotationMap;
     private final Set&lt;Annotation&gt; annotationSet;
 
-<span class="fc" id="L40">    AnnotationStore(Map&lt;Class&lt;? extends Annotation&gt;, Annotation&gt; annotationMap, Set&lt;Annotation&gt; annotationSet) {</span>
-<span class="fc" id="L41">        this.annotationMap = annotationMap;</span>
-<span class="fc" id="L42">        this.annotationSet = unmodifiableSet(annotationSet);</span>
-<span class="fc" id="L43">    }</span>
+<span class="fc" id="L38">    AnnotationStore(Map&lt;Class&lt;? extends Annotation&gt;, Annotation&gt; annotationMap, Set&lt;Annotation&gt; annotationSet) {</span>
+<span class="fc" id="L39">        this.annotationMap = annotationMap;</span>
+<span class="fc" id="L40">        this.annotationSet = unmodifiableSet(annotationSet);</span>
+<span class="fc" id="L41">    }</span>
 
-<span class="nc" id="L45">    AnnotationStore() {</span>
-<span class="nc" id="L46">        annotationMap = emptyMap();</span>
-<span class="nc" id="L47">        annotationSet = emptySet();</span>
-<span class="nc" id="L48">    }</span>
+<span class="fc" id="L43">    AnnotationStore() {</span>
+<span class="fc" id="L44">        annotationMap = Map.of();</span>
+<span class="fc" id="L45">        annotationSet = Set.of();</span>
+<span class="fc" id="L46">    }</span>
 
     &lt;T extends Annotation&gt; T getAnnotation(Class&lt;T&gt; annotationType) {
-<span class="fc" id="L51">        return annotationType.cast(annotationMap.get(annotationType));</span>
+<span class="fc" id="L49">        return annotationType.cast(annotationMap.get(annotationType));</span>
     }
 
     Set&lt;Annotation&gt; getAnnotations() {
-<span class="fc" id="L55">        return annotationSet;</span>
+<span class="fc" id="L53">        return annotationSet;</span>
     }
 
     boolean isAnnotationPresent(Class&lt;? extends Annotation&gt; annotationType) {
-<span class="fc" id="L59">        return annotationMap.containsKey(annotationType);</span>
+<span class="fc" id="L57">        return annotationMap.containsKey(annotationType);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

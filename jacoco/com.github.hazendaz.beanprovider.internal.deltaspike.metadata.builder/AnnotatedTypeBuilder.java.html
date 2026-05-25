@@ -140,7 +140,7 @@ public class AnnotatedTypeBuilder&lt;X&gt; {
      *             if the annotation is null
      */
     public AnnotatedTypeBuilder&lt;X&gt; addToField(AnnotatedField&lt;? super X&gt; field, Annotation annotation) {
-<span class="nc" id="L143">        return addToField(field.getJavaMember(), annotation);</span>
+<span class="fc" id="L143">        return addToField(field.getJavaMember(), annotation);</span>
     }
 
     /**
@@ -155,8 +155,8 @@ public class AnnotatedTypeBuilder&lt;X&gt; {
      *             if the annotationType is null or if the field is not currently declared on the type
      */
     public AnnotatedTypeBuilder&lt;X&gt; removeFromField(Field field, Class&lt;? extends Annotation&gt; annotationType) {
-<span class="pc bpc" id="L158" title="1 of 2 branches missed.">        if (fields.get(field) == null) {</span>
-<span class="nc" id="L159">            throw new IllegalArgumentException(&quot;field &quot; + field + &quot; not present on class &quot; + getJavaClass());</span>
+<span class="fc bfc" id="L158" title="All 2 branches covered.">        if (fields.get(field) == null) {</span>
+<span class="fc" id="L159">            throw new IllegalArgumentException(&quot;field &quot; + field + &quot; not present on class &quot; + getJavaClass());</span>
         } else {
 <span class="fc" id="L161">            fields.get(field).remove(annotationType);</span>
         }
@@ -176,7 +176,7 @@ public class AnnotatedTypeBuilder&lt;X&gt; {
      */
     public AnnotatedTypeBuilder&lt;X&gt; removeFromField(AnnotatedField&lt;? super X&gt; field,
             Class&lt;? extends Annotation&gt; annotationType) {
-<span class="nc" id="L179">        return removeFromField(field.getJavaMember(), annotationType);</span>
+<span class="fc" id="L179">        return removeFromField(field.getJavaMember(), annotationType);</span>
     }
 
     /**
@@ -191,11 +191,11 @@ public class AnnotatedTypeBuilder&lt;X&gt; {
      *             if the annotation is null
      */
     public AnnotatedTypeBuilder&lt;X&gt; addToMethod(Method method, Annotation annotation) {
-<span class="nc bnc" id="L194" title="All 2 branches missed.">        if (methods.get(method) == null) {</span>
+<span class="pc bpc" id="L194" title="1 of 2 branches missed.">        if (methods.get(method) == null) {</span>
 <span class="nc" id="L195">            methods.put(method, new AnnotationBuilder());</span>
         }
-<span class="nc" id="L197">        methods.get(method).add(annotation);</span>
-<span class="nc" id="L198">        return this;</span>
+<span class="fc" id="L197">        methods.get(method).add(annotation);</span>
+<span class="fc" id="L198">        return this;</span>
     }
 
     /**
@@ -210,7 +210,7 @@ public class AnnotatedTypeBuilder&lt;X&gt; {
      *             if the annotation is null
      */
     public AnnotatedTypeBuilder&lt;X&gt; addToMethod(AnnotatedMethod&lt;? super X&gt; method, Annotation annotation) {
-<span class="nc" id="L213">        return addToMethod(method.getJavaMember(), annotation);</span>
+<span class="fc" id="L213">        return addToMethod(method.getJavaMember(), annotation);</span>
     }
 
     /**
@@ -225,12 +225,12 @@ public class AnnotatedTypeBuilder&lt;X&gt; {
      *             if the annotationType is null or if the method is not currently declared on the type
      */
     public AnnotatedTypeBuilder&lt;X&gt; removeFromMethod(Method method, Class&lt;? extends Annotation&gt; annotationType) {
-<span class="nc bnc" id="L228" title="All 2 branches missed.">        if (methods.get(method) == null) {</span>
-<span class="nc" id="L229">            throw new IllegalArgumentException(&quot;Method &quot; + method + &quot; not present on class&quot; + getJavaClass());</span>
+<span class="fc bfc" id="L228" title="All 2 branches covered.">        if (methods.get(method) == null) {</span>
+<span class="fc" id="L229">            throw new IllegalArgumentException(&quot;Method &quot; + method + &quot; not present on class&quot; + getJavaClass());</span>
         } else {
-<span class="nc" id="L231">            methods.get(method).remove(annotationType);</span>
+<span class="fc" id="L231">            methods.get(method).remove(annotationType);</span>
         }
-<span class="nc" id="L233">        return this;</span>
+<span class="fc" id="L233">        return this;</span>
     }
 
     /**
@@ -246,7 +246,7 @@ public class AnnotatedTypeBuilder&lt;X&gt; {
      */
     public AnnotatedTypeBuilder&lt;X&gt; removeFromMethod(AnnotatedMethod&lt;? super X&gt; method,
             Class&lt;? extends Annotation&gt; annotationType) {
-<span class="nc" id="L249">        return removeFromMethod(method.getJavaMember(), annotationType);</span>
+<span class="fc" id="L249">        return removeFromMethod(method.getJavaMember(), annotationType);</span>
     }
 
     /**
@@ -264,17 +264,17 @@ public class AnnotatedTypeBuilder&lt;X&gt; {
      *             if the annotation is null
      */
     public AnnotatedTypeBuilder&lt;X&gt; addToMethodParameter(Method method, int position, Annotation annotation) {
-<span class="nc bnc" id="L267" title="All 2 branches missed.">        if (!methods.containsKey(method)) {</span>
+<span class="pc bpc" id="L267" title="1 of 2 branches missed.">        if (!methods.containsKey(method)) {</span>
 <span class="nc" id="L268">            methods.put(method, new AnnotationBuilder());</span>
         }
-<span class="nc bnc" id="L270" title="All 2 branches missed.">        if (methodParameters.get(method) == null) {</span>
+<span class="pc bpc" id="L270" title="1 of 2 branches missed.">        if (methodParameters.get(method) == null) {</span>
 <span class="nc" id="L271">            methodParameters.put(method, new HashMap&lt;&gt;());</span>
         }
-<span class="nc bnc" id="L273" title="All 2 branches missed.">        if (methodParameters.get(method).get(position) == null) {</span>
+<span class="pc bpc" id="L273" title="1 of 2 branches missed.">        if (methodParameters.get(method).get(position) == null) {</span>
 <span class="nc" id="L274">            methodParameters.get(method).put(position, new AnnotationBuilder());</span>
         }
-<span class="nc" id="L276">        methodParameters.get(method).get(position).add(annotation);</span>
-<span class="nc" id="L277">        return this;</span>
+<span class="fc" id="L276">        methodParameters.get(method).get(position).add(annotation);</span>
+<span class="fc" id="L277">        return this;</span>
     }
 
     /**
@@ -293,18 +293,18 @@ public class AnnotatedTypeBuilder&lt;X&gt; {
      */
     public AnnotatedTypeBuilder&lt;X&gt; removeFromMethodParameter(Method method, int position,
             Class&lt;? extends Annotation&gt; annotationType) {
-<span class="nc bnc" id="L296" title="All 2 branches missed.">        if (methods.get(method) == null) {</span>
+<span class="pc bpc" id="L296" title="1 of 2 branches missed.">        if (methods.get(method) == null) {</span>
 <span class="nc" id="L297">            throw new IllegalArgumentException(&quot;Method &quot; + method + &quot; not present on class &quot; + getJavaClass());</span>
         } else {
-<span class="nc bnc" id="L299" title="All 2 branches missed.">            if (methodParameters.get(method).get(position) == null) {</span>
-<span class="nc" id="L300">                throw new IllegalArgumentException(</span>
-<span class="nc" id="L301">                        String.format(&quot;parameter %s not present on method %s declared on class %s&quot;, method, position,</span>
-<span class="nc" id="L302">                                getJavaClass()));</span>
+<span class="fc bfc" id="L299" title="All 2 branches covered.">            if (methodParameters.get(method).get(position) == null) {</span>
+<span class="fc" id="L300">                throw new IllegalArgumentException(</span>
+<span class="fc" id="L301">                        String.format(&quot;parameter %s not present on method %s declared on class %s&quot;, method, position,</span>
+<span class="fc" id="L302">                                getJavaClass()));</span>
             } else {
-<span class="nc" id="L304">                methodParameters.get(method).get(position).remove(annotationType);</span>
+<span class="fc" id="L304">                methodParameters.get(method).get(position).remove(annotationType);</span>
             }
         }
-<span class="nc" id="L307">        return this;</span>
+<span class="fc" id="L307">        return this;</span>
     }
 
     /**
@@ -319,11 +319,11 @@ public class AnnotatedTypeBuilder&lt;X&gt; {
      *             if the annotation is null
      */
     public AnnotatedTypeBuilder&lt;X&gt; addToConstructor(Constructor&lt;X&gt; constructor, Annotation annotation) {
-<span class="nc bnc" id="L322" title="All 2 branches missed.">        if (constructors.get(constructor) == null) {</span>
+<span class="pc bpc" id="L322" title="1 of 2 branches missed.">        if (constructors.get(constructor) == null) {</span>
 <span class="nc" id="L323">            constructors.put(constructor, new AnnotationBuilder());</span>
         }
-<span class="nc" id="L325">        constructors.get(constructor).add(annotation);</span>
-<span class="nc" id="L326">        return this;</span>
+<span class="fc" id="L325">        constructors.get(constructor).add(annotation);</span>
+<span class="fc" id="L326">        return this;</span>
     }
 
     /**
@@ -338,7 +338,7 @@ public class AnnotatedTypeBuilder&lt;X&gt; {
      *             if the annotation is null
      */
     public AnnotatedTypeBuilder&lt;X&gt; addToConstructor(AnnotatedConstructor&lt;X&gt; constructor, Annotation annotation) {
-<span class="nc" id="L341">        return addToConstructor(constructor.getJavaMember(), annotation);</span>
+<span class="fc" id="L341">        return addToConstructor(constructor.getJavaMember(), annotation);</span>
     }
 
     /**
@@ -354,10 +354,10 @@ public class AnnotatedTypeBuilder&lt;X&gt; {
      */
     public AnnotatedTypeBuilder&lt;X&gt; removeFromConstructor(Constructor&lt;X&gt; constructor,
             Class&lt;? extends Annotation&gt; annotationType) {
-<span class="nc bnc" id="L357" title="All 2 branches missed.">        if (constructors.get(constructor) != null) {</span>
-<span class="nc" id="L358">            constructors.get(constructor).remove(annotationType);</span>
+<span class="pc bpc" id="L357" title="1 of 2 branches missed.">        if (constructors.get(constructor) != null) {</span>
+<span class="fc" id="L358">            constructors.get(constructor).remove(annotationType);</span>
         }
-<span class="nc" id="L360">        return this;</span>
+<span class="fc" id="L360">        return this;</span>
     }
 
     /**
@@ -374,7 +374,7 @@ public class AnnotatedTypeBuilder&lt;X&gt; {
      */
     public AnnotatedTypeBuilder&lt;X&gt; removeFromConstructor(AnnotatedConstructor&lt;X&gt; constructor,
             Class&lt;? extends Annotation&gt; annotationType) {
-<span class="nc" id="L377">        return removeFromConstructor(constructor.getJavaMember(), annotationType);</span>
+<span class="fc" id="L377">        return removeFromConstructor(constructor.getJavaMember(), annotationType);</span>
     }
 
     /**
@@ -443,14 +443,14 @@ public class AnnotatedTypeBuilder&lt;X&gt; {
      */
     public AnnotatedTypeBuilder&lt;X&gt; removeFromParameter(AnnotatedParameter&lt;? super X&gt; parameter,
             Class&lt;? extends Annotation&gt; annotationType) {
-<span class="nc bnc" id="L446" title="All 2 branches missed.">        if (parameter.getDeclaringCallable().getJavaMember() instanceof Method) {</span>
-<span class="nc" id="L447">            Method method = (Method) parameter.getDeclaringCallable().getJavaMember();</span>
-<span class="nc" id="L448">            return removeFromMethodParameter(method, parameter.getPosition(), annotationType);</span>
+<span class="fc bfc" id="L446" title="All 2 branches covered.">        if (parameter.getDeclaringCallable().getJavaMember() instanceof Method) {</span>
+<span class="fc" id="L447">            Method method = (Method) parameter.getDeclaringCallable().getJavaMember();</span>
+<span class="fc" id="L448">            return removeFromMethodParameter(method, parameter.getPosition(), annotationType);</span>
         }
-<span class="nc bnc" id="L450" title="All 2 branches missed.">        if (parameter.getDeclaringCallable().getJavaMember() instanceof Constructor&lt;?&gt;) {</span>
+<span class="pc bpc" id="L450" title="1 of 2 branches missed.">        if (parameter.getDeclaringCallable().getJavaMember() instanceof Constructor&lt;?&gt;) {</span>
             @SuppressWarnings(&quot;unchecked&quot;)
-<span class="nc" id="L452">            Constructor&lt;X&gt; constructor = (Constructor&lt;X&gt;) parameter.getDeclaringCallable().getJavaMember();</span>
-<span class="nc" id="L453">            return removeFromConstructorParameter(constructor, parameter.getPosition(), annotationType);</span>
+<span class="fc" id="L452">            Constructor&lt;X&gt; constructor = (Constructor&lt;X&gt;) parameter.getDeclaringCallable().getJavaMember();</span>
+<span class="fc" id="L453">            return removeFromConstructorParameter(constructor, parameter.getPosition(), annotationType);</span>
         } else {
 <span class="nc" id="L455">            throw new IllegalArgumentException(&quot;Cannot remove from parameter &quot; + parameter</span>
 <span class="nc" id="L456">                    + &quot; - cannot operate on member &quot; + parameter.getDeclaringCallable().getJavaMember());</span>
@@ -470,14 +470,14 @@ public class AnnotatedTypeBuilder&lt;X&gt; {
      *             if the annotation is null or if the parameter is not declared on either a constructor or a method
      */
     public AnnotatedTypeBuilder&lt;X&gt; addToParameter(AnnotatedParameter&lt;? super X&gt; parameter, Annotation annotation) {
-<span class="nc bnc" id="L473" title="All 2 branches missed.">        if (parameter.getDeclaringCallable().getJavaMember() instanceof Method) {</span>
-<span class="nc" id="L474">            Method method = (Method) parameter.getDeclaringCallable().getJavaMember();</span>
-<span class="nc" id="L475">            return addToMethodParameter(method, parameter.getPosition(), annotation);</span>
+<span class="fc bfc" id="L473" title="All 2 branches covered.">        if (parameter.getDeclaringCallable().getJavaMember() instanceof Method) {</span>
+<span class="fc" id="L474">            Method method = (Method) parameter.getDeclaringCallable().getJavaMember();</span>
+<span class="fc" id="L475">            return addToMethodParameter(method, parameter.getPosition(), annotation);</span>
         }
-<span class="nc bnc" id="L477" title="All 2 branches missed.">        if (parameter.getDeclaringCallable().getJavaMember() instanceof Constructor&lt;?&gt;) {</span>
+<span class="pc bpc" id="L477" title="1 of 2 branches missed.">        if (parameter.getDeclaringCallable().getJavaMember() instanceof Constructor&lt;?&gt;) {</span>
             @SuppressWarnings(&quot;unchecked&quot;)
-<span class="nc" id="L479">            Constructor&lt;X&gt; constructor = (Constructor&lt;X&gt;) parameter.getDeclaringCallable().getJavaMember();</span>
-<span class="nc" id="L480">            return addToConstructorParameter(constructor, parameter.getPosition(), annotation);</span>
+<span class="fc" id="L479">            Constructor&lt;X&gt; constructor = (Constructor&lt;X&gt;) parameter.getDeclaringCallable().getJavaMember();</span>
+<span class="fc" id="L480">            return addToConstructorParameter(constructor, parameter.getPosition(), annotation);</span>
         } else {
 <span class="nc" id="L482">            throw new IllegalArgumentException(&quot;Cannot remove from parameter &quot; + parameter</span>
 <span class="nc" id="L483">                    + &quot; - cannot operate on member &quot; + parameter.getDeclaringCallable().getJavaMember());</span>
@@ -495,8 +495,8 @@ public class AnnotatedTypeBuilder&lt;X&gt; {
      *             if the annotationType is null
      */
     public AnnotatedTypeBuilder&lt;X&gt; removeFromAll(Class&lt;? extends Annotation&gt; annotationType) {
-<span class="pc bpc" id="L498" title="1 of 2 branches missed.">        if (annotationType == null) {</span>
-<span class="nc" id="L499">            throw new IllegalArgumentException(String.format(&quot;%s parameter must not be null&quot;, &quot;annotationType&quot;));</span>
+<span class="fc bfc" id="L498" title="All 2 branches covered.">        if (annotationType == null) {</span>
+<span class="fc" id="L499">            throw new IllegalArgumentException(String.format(&quot;%s parameter must not be null&quot;, &quot;annotationType&quot;));</span>
         }
 <span class="fc" id="L501">        removeFromClass(annotationType);</span>
 <span class="fc bfc" id="L502" title="All 2 branches covered.">        for (Map.Entry&lt;Field, AnnotationBuilder&gt; field : fields.entrySet()) {</span>
@@ -551,8 +551,8 @@ public class AnnotatedTypeBuilder&lt;X&gt; {
      *             if type is null
      */
     public AnnotatedTypeBuilder&lt;X&gt; readFromType(AnnotatedType&lt;X&gt; type, boolean overwrite) {
-<span class="pc bpc" id="L554" title="1 of 2 branches missed.">        if (type == null) {</span>
-<span class="nc" id="L555">            throw new IllegalArgumentException(String.format(&quot;%s parameter must not be null&quot;, &quot;type&quot;));</span>
+<span class="fc bfc" id="L554" title="All 2 branches covered.">        if (type == null) {</span>
+<span class="fc" id="L555">            throw new IllegalArgumentException(String.format(&quot;%s parameter must not be null&quot;, &quot;type&quot;));</span>
         }
 <span class="pc bpc" id="L557" title="1 of 4 branches missed.">        if (javaClass == null || overwrite) {</span>
 <span class="fc" id="L558">            javaClass = type.getJavaClass();</span>
@@ -623,8 +623,8 @@ public class AnnotatedTypeBuilder&lt;X&gt; {
      *            if true, the read annotation will replace any existing annotation
      */
     public AnnotatedTypeBuilder&lt;X&gt; readFromType(Class&lt;X&gt; type, boolean overwrite) {
-<span class="pc bpc" id="L626" title="1 of 2 branches missed.">        if (type == null) {</span>
-<span class="nc" id="L627">            throw new IllegalArgumentException(String.format(&quot;%s parameter must not be null&quot;, &quot;type&quot;));</span>
+<span class="fc bfc" id="L626" title="All 2 branches covered.">        if (type == null) {</span>
+<span class="fc" id="L627">            throw new IllegalArgumentException(String.format(&quot;%s parameter must not be null&quot;, &quot;type&quot;));</span>
         }
 <span class="pc bpc" id="L629" title="3 of 4 branches missed.">        if (javaClass == null || overwrite) {</span>
 <span class="fc" id="L630">            javaClass = type;</span>
@@ -786,14 +786,14 @@ public class AnnotatedTypeBuilder&lt;X&gt; {
      *             if field or type is null
      */
     public void overrideFieldType(Field field, Type type) {
-<span class="nc bnc" id="L789" title="All 2 branches missed.">        if (field == null) {</span>
-<span class="nc" id="L790">            throw new IllegalArgumentException(String.format(&quot;%s parameter must not be null&quot;, &quot;field&quot;));</span>
+<span class="fc bfc" id="L789" title="All 2 branches covered.">        if (field == null) {</span>
+<span class="fc" id="L790">            throw new IllegalArgumentException(String.format(&quot;%s parameter must not be null&quot;, &quot;field&quot;));</span>
         }
-<span class="nc bnc" id="L792" title="All 2 branches missed.">        if (type == null) {</span>
-<span class="nc" id="L793">            throw new IllegalArgumentException(String.format(&quot;%s parameter must not be null&quot;, &quot;type&quot;));</span>
+<span class="fc bfc" id="L792" title="All 2 branches covered.">        if (type == null) {</span>
+<span class="fc" id="L793">            throw new IllegalArgumentException(String.format(&quot;%s parameter must not be null&quot;, &quot;type&quot;));</span>
         }
-<span class="nc" id="L795">        fieldTypes.put(field, type);</span>
-<span class="nc" id="L796">    }</span>
+<span class="fc" id="L795">        fieldTypes.put(field, type);</span>
+<span class="fc" id="L796">    }</span>
 
     /**
      * Override the declared type of a field
@@ -807,8 +807,8 @@ public class AnnotatedTypeBuilder&lt;X&gt; {
      *             if field or type is null
      */
     public void overrideFieldType(AnnotatedField&lt;? super X&gt; field, Type type) {
-<span class="nc" id="L810">        overrideFieldType(field.getJavaMember(), type);</span>
-<span class="nc" id="L811">    }</span>
+<span class="fc" id="L810">        overrideFieldType(field.getJavaMember(), type);</span>
+<span class="fc" id="L811">    }</span>
 
     /**
      * Override the declared type of a method parameter
@@ -824,17 +824,17 @@ public class AnnotatedTypeBuilder&lt;X&gt; {
      *             if parameter or type is null
      */
     public AnnotatedTypeBuilder&lt;X&gt; overrideMethodParameterType(Method method, int position, Type type) {
-<span class="nc bnc" id="L827" title="All 2 branches missed.">        if (method == null) {</span>
-<span class="nc" id="L828">            throw new IllegalArgumentException(String.format(&quot;%s parameter must not be null&quot;, &quot;method&quot;));</span>
+<span class="fc bfc" id="L827" title="All 2 branches covered.">        if (method == null) {</span>
+<span class="fc" id="L828">            throw new IllegalArgumentException(String.format(&quot;%s parameter must not be null&quot;, &quot;method&quot;));</span>
         }
-<span class="nc bnc" id="L830" title="All 2 branches missed.">        if (type == null) {</span>
-<span class="nc" id="L831">            throw new IllegalArgumentException(String.format(&quot;%s parameter must not be null&quot;, &quot;type&quot;));</span>
+<span class="fc bfc" id="L830" title="All 2 branches covered.">        if (type == null) {</span>
+<span class="fc" id="L831">            throw new IllegalArgumentException(String.format(&quot;%s parameter must not be null&quot;, &quot;type&quot;));</span>
         }
-<span class="nc bnc" id="L833" title="All 2 branches missed.">        if (methodParameterTypes.get(method) == null) {</span>
-<span class="nc" id="L834">            methodParameterTypes.put(method, new HashMap&lt;&gt;());</span>
+<span class="pc bpc" id="L833" title="1 of 2 branches missed.">        if (methodParameterTypes.get(method) == null) {</span>
+<span class="fc" id="L834">            methodParameterTypes.put(method, new HashMap&lt;&gt;());</span>
         }
-<span class="nc" id="L836">        methodParameterTypes.get(method).put(position, type);</span>
-<span class="nc" id="L837">        return this;</span>
+<span class="fc" id="L836">        methodParameterTypes.get(method).put(position, type);</span>
+<span class="fc" id="L837">        return this;</span>
     }
 
     /**
@@ -852,17 +852,17 @@ public class AnnotatedTypeBuilder&lt;X&gt; {
      */
     public AnnotatedTypeBuilder&lt;X&gt; overrideConstructorParameterType(Constructor&lt;X&gt; constructor, int position,
             Type type) {
-<span class="nc bnc" id="L855" title="All 2 branches missed.">        if (constructor == null) {</span>
-<span class="nc" id="L856">            throw new IllegalArgumentException(String.format(&quot;%s parameter must not be null&quot;, &quot;constructor&quot;));</span>
+<span class="fc bfc" id="L855" title="All 2 branches covered.">        if (constructor == null) {</span>
+<span class="fc" id="L856">            throw new IllegalArgumentException(String.format(&quot;%s parameter must not be null&quot;, &quot;constructor&quot;));</span>
         }
-<span class="nc bnc" id="L858" title="All 2 branches missed.">        if (type == null) {</span>
-<span class="nc" id="L859">            throw new IllegalArgumentException(String.format(&quot;%s parameter must not be null&quot;, &quot;type&quot;));</span>
+<span class="fc bfc" id="L858" title="All 2 branches covered.">        if (type == null) {</span>
+<span class="fc" id="L859">            throw new IllegalArgumentException(String.format(&quot;%s parameter must not be null&quot;, &quot;type&quot;));</span>
         }
-<span class="nc bnc" id="L861" title="All 2 branches missed.">        if (constructorParameterTypes.get(constructor) == null) {</span>
-<span class="nc" id="L862">            constructorParameterTypes.put(constructor, new HashMap&lt;&gt;());</span>
+<span class="pc bpc" id="L861" title="1 of 2 branches missed.">        if (constructorParameterTypes.get(constructor) == null) {</span>
+<span class="fc" id="L862">            constructorParameterTypes.put(constructor, new HashMap&lt;&gt;());</span>
         }
-<span class="nc" id="L864">        constructorParameterTypes.get(constructor).put(position, type);</span>
-<span class="nc" id="L865">        return this;</span>
+<span class="fc" id="L864">        constructorParameterTypes.get(constructor).put(position, type);</span>
+<span class="fc" id="L865">        return this;</span>
     }
 
     /**
@@ -877,14 +877,14 @@ public class AnnotatedTypeBuilder&lt;X&gt; {
      *             if parameter or type is null
      */
     public AnnotatedTypeBuilder&lt;X&gt; overrideParameterType(AnnotatedParameter&lt;? super X&gt; parameter, Type type) {
-<span class="nc bnc" id="L880" title="All 2 branches missed.">        if (parameter.getDeclaringCallable().getJavaMember() instanceof Method) {</span>
-<span class="nc" id="L881">            Method method = (Method) parameter.getDeclaringCallable().getJavaMember();</span>
-<span class="nc" id="L882">            return overrideMethodParameterType(method, parameter.getPosition(), type);</span>
+<span class="fc bfc" id="L880" title="All 2 branches covered.">        if (parameter.getDeclaringCallable().getJavaMember() instanceof Method) {</span>
+<span class="fc" id="L881">            Method method = (Method) parameter.getDeclaringCallable().getJavaMember();</span>
+<span class="fc" id="L882">            return overrideMethodParameterType(method, parameter.getPosition(), type);</span>
         }
-<span class="nc bnc" id="L884" title="All 2 branches missed.">        if (parameter.getDeclaringCallable().getJavaMember() instanceof Constructor&lt;?&gt;) {</span>
+<span class="pc bpc" id="L884" title="1 of 2 branches missed.">        if (parameter.getDeclaringCallable().getJavaMember() instanceof Constructor&lt;?&gt;) {</span>
             @SuppressWarnings(&quot;unchecked&quot;)
-<span class="nc" id="L886">            Constructor&lt;X&gt; constructor = (Constructor&lt;X&gt;) parameter.getDeclaringCallable().getJavaMember();</span>
-<span class="nc" id="L887">            return overrideConstructorParameterType(constructor, parameter.getPosition(), type);</span>
+<span class="fc" id="L886">            Constructor&lt;X&gt; constructor = (Constructor&lt;X&gt;) parameter.getDeclaringCallable().getJavaMember();</span>
+<span class="fc" id="L887">            return overrideConstructorParameterType(constructor, parameter.getPosition(), type);</span>
         } else {
 <span class="nc" id="L889">            throw new IllegalArgumentException(&quot;Cannot remove from parameter &quot; + parameter</span>
 <span class="nc" id="L890">                    + &quot; - cannot operate on member &quot; + parameter.getDeclaringCallable().getJavaMember());</span>
@@ -895,15 +895,15 @@ public class AnnotatedTypeBuilder&lt;X&gt; {
      * getter for the class
      */
     public Class&lt;X&gt; getJavaClass() {
-<span class="nc" id="L898">        return javaClass;</span>
+<span class="fc" id="L898">        return javaClass;</span>
     }
 
     /**
      * setter for the class
      */
     public AnnotatedTypeBuilder&lt;X&gt; setJavaClass(Class&lt;X&gt; javaClass) {
-<span class="nc" id="L905">        this.javaClass = javaClass;</span>
-<span class="nc" id="L906">        return this;</span>
+<span class="fc" id="L905">        this.javaClass = javaClass;</span>
+<span class="fc" id="L906">        return this;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

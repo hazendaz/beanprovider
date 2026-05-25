@@ -1,0 +1,73 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="" lang="">
+<head><meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<title>AnnotationBuilderTest xref</title>
+<link type="text/css" rel="stylesheet" href="../../../../../../../../stylesheet.css" />
+</head>
+<body>
+<div id="overview"><a href="../../../../../../../../../testapidocs/com/github/hazendaz/beanprovider/internal/deltaspike/metadata/builder/AnnotationBuilderTest.html">View Javadoc</a></div><pre>
+<a class="jxr_linenumber" name="L1" href="#L1">1</a>   <em class="jxr_comment">/*</em>
+<a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_comment"> * SPDX-License-Identifier: Apache-2.0</em>
+<a class="jxr_linenumber" name="L3" href="#L3">3</a>   <em class="jxr_comment"> * Copyright 2011-2026 Hazendaz</em>
+<a class="jxr_linenumber" name="L4" href="#L4">4</a>   <em class="jxr_comment"> */</em>
+<a class="jxr_linenumber" name="L5" href="#L5">5</a>   <strong class="jxr_keyword">package</strong> com.github.hazendaz.beanprovider.internal.deltaspike.metadata.builder;
+<a class="jxr_linenumber" name="L6" href="#L6">6</a>   
+<a class="jxr_linenumber" name="L7" href="#L7">7</a>   <strong class="jxr_keyword">import</strong> <strong class="jxr_keyword">static</strong> org.assertj.core.api.Assertions.assertThat;
+<a class="jxr_linenumber" name="L8" href="#L8">8</a>   <strong class="jxr_keyword">import</strong> <strong class="jxr_keyword">static</strong> org.assertj.core.api.Assertions.assertThatThrownBy;
+<a class="jxr_linenumber" name="L9" href="#L9">9</a>   
+<a class="jxr_linenumber" name="L10" href="#L10">10</a>  <strong class="jxr_keyword">import</strong> com.github.hazendaz.beanprovider.internal.deltaspike.literal.AlternativeLiteral;
+<a class="jxr_linenumber" name="L11" href="#L11">11</a>  <strong class="jxr_keyword">import</strong> com.github.hazendaz.beanprovider.internal.deltaspike.literal.NamedLiteral;
+<a class="jxr_linenumber" name="L12" href="#L12">12</a>  
+<a class="jxr_linenumber" name="L13" href="#L13">13</a>  <strong class="jxr_keyword">import</strong> jakarta.enterprise.inject.Alternative;
+<a class="jxr_linenumber" name="L14" href="#L14">14</a>  <strong class="jxr_keyword">import</strong> jakarta.inject.Named;
+<a class="jxr_linenumber" name="L15" href="#L15">15</a>  
+<a class="jxr_linenumber" name="L16" href="#L16">16</a>  <strong class="jxr_keyword">import</strong> java.lang.annotation.Annotation;
+<a class="jxr_linenumber" name="L17" href="#L17">17</a>  <strong class="jxr_keyword">import</strong> java.util.List;
+<a class="jxr_linenumber" name="L18" href="#L18">18</a>  
+<a class="jxr_linenumber" name="L19" href="#L19">19</a>  <strong class="jxr_keyword">import</strong> org.junit.jupiter.api.Test;
+<a class="jxr_linenumber" name="L20" href="#L20">20</a>  
+<a class="jxr_linenumber" name="L21" href="#L21">21</a>  <strong class="jxr_keyword">class</strong> <a name="AnnotationBuilderTest" href="../../../../../../../../com/github/hazendaz/beanprovider/internal/deltaspike/metadata/builder/AnnotationBuilderTest.html#AnnotationBuilderTest">AnnotationBuilderTest</a> {
+<a class="jxr_linenumber" name="L22" href="#L22">22</a>  
+<a class="jxr_linenumber" name="L23" href="#L23">23</a>      @Deprecated
+<a class="jxr_linenumber" name="L24" href="#L24">24</a>      <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">class</strong> DeprecatedType {
+<a class="jxr_linenumber" name="L25" href="#L25">25</a>          <em class="jxr_comment">// marker class</em>
+<a class="jxr_linenumber" name="L26" href="#L26">26</a>      }
+<a class="jxr_linenumber" name="L27" href="#L27">27</a>  
+<a class="jxr_linenumber" name="L28" href="#L28">28</a>      @Test
+<a class="jxr_linenumber" name="L29" href="#L29">29</a>      <strong class="jxr_keyword">void</strong> defaultAnnotationStoreIsEmpty() {
+<a class="jxr_linenumber" name="L30" href="#L30">30</a>          <strong class="jxr_keyword">final</strong> AnnotationStore store = <strong class="jxr_keyword">new</strong> AnnotationStore();
+<a class="jxr_linenumber" name="L31" href="#L31">31</a>          assertThat(store.getAnnotations()).isEmpty();
+<a class="jxr_linenumber" name="L32" href="#L32">32</a>          assertThat(store.isAnnotationPresent(Named.<strong class="jxr_keyword">class</strong>)).isFalse();
+<a class="jxr_linenumber" name="L33" href="#L33">33</a>          assertThat(store.getAnnotation(Named.<strong class="jxr_keyword">class</strong>)).isNull();
+<a class="jxr_linenumber" name="L34" href="#L34">34</a>      }
+<a class="jxr_linenumber" name="L35" href="#L35">35</a>  
+<a class="jxr_linenumber" name="L36" href="#L36">36</a>      @Test
+<a class="jxr_linenumber" name="L37" href="#L37">37</a>      <strong class="jxr_keyword">void</strong> annotationBuilderSupportsAllMutationPaths() {
+<a class="jxr_linenumber" name="L38" href="#L38">38</a>          <strong class="jxr_keyword">final</strong> AnnotationBuilder source = <strong class="jxr_keyword">new</strong> AnnotationBuilder();
+<a class="jxr_linenumber" name="L39" href="#L39">39</a>          source.add(<strong class="jxr_keyword">new</strong> <a name="NamedLiteral" href="../../../../../../../../com/github/hazendaz/beanprovider/internal/deltaspike/literal/NamedLiteral.html#NamedLiteral">NamedLiteral</a>(<span class="jxr_string">"source"</span>));
+<a class="jxr_linenumber" name="L40" href="#L40">40</a>  
+<a class="jxr_linenumber" name="L41" href="#L41">41</a>          <strong class="jxr_keyword">final</strong> AnnotationBuilder builder = <strong class="jxr_keyword">new</strong> AnnotationBuilder();
+<a class="jxr_linenumber" name="L42" href="#L42">42</a>          builder.add(<strong class="jxr_keyword">new</strong> <a name="AlternativeLiteral" href="../../../../../../../../com/github/hazendaz/beanprovider/internal/deltaspike/literal/AlternativeLiteral.html#AlternativeLiteral">AlternativeLiteral</a>());
+<a class="jxr_linenumber" name="L43" href="#L43">43</a>          builder.addAll(List.&lt;Annotation&gt; of(<strong class="jxr_keyword">new</strong> <a name="NamedLiteral" href="../../../../../../../../com/github/hazendaz/beanprovider/internal/deltaspike/literal/NamedLiteral.html#NamedLiteral">NamedLiteral</a>(<span class="jxr_string">"collection"</span>)));
+<a class="jxr_linenumber" name="L44" href="#L44">44</a>          builder.addAll(source.create());
+<a class="jxr_linenumber" name="L45" href="#L45">45</a>          builder.addAll(DeprecatedType.<strong class="jxr_keyword">class</strong>);
+<a class="jxr_linenumber" name="L46" href="#L46">46</a>          builder.remove(Deprecated.<strong class="jxr_keyword">class</strong>);
+<a class="jxr_linenumber" name="L47" href="#L47">47</a>  
+<a class="jxr_linenumber" name="L48" href="#L48">48</a>          assertThat(builder.isAnnotationPresent(Named.<strong class="jxr_keyword">class</strong>)).isTrue();
+<a class="jxr_linenumber" name="L49" href="#L49">49</a>          assertThat(builder.getAnnotation(Named.<strong class="jxr_keyword">class</strong>).value()).isEqualTo(<span class="jxr_string">"source"</span>);
+<a class="jxr_linenumber" name="L50" href="#L50">50</a>          assertThat(builder.isAnnotationPresent(Alternative.<strong class="jxr_keyword">class</strong>)).isTrue();
+<a class="jxr_linenumber" name="L51" href="#L51">51</a>          assertThat(builder.toString()).contains(<span class="jxr_string">"source"</span>);
+<a class="jxr_linenumber" name="L52" href="#L52">52</a>      }
+<a class="jxr_linenumber" name="L53" href="#L53">53</a>  
+<a class="jxr_linenumber" name="L54" href="#L54">54</a>      @Test
+<a class="jxr_linenumber" name="L55" href="#L55">55</a>      <strong class="jxr_keyword">void</strong> nullInputsAreRejected() {
+<a class="jxr_linenumber" name="L56" href="#L56">56</a>          <strong class="jxr_keyword">final</strong> AnnotationBuilder builder = <strong class="jxr_keyword">new</strong> AnnotationBuilder();
+<a class="jxr_linenumber" name="L57" href="#L57">57</a>          assertThatThrownBy(() -&gt; builder.add(<strong class="jxr_keyword">null</strong>)).isInstanceOf(IllegalArgumentException.<strong class="jxr_keyword">class</strong>);
+<a class="jxr_linenumber" name="L58" href="#L58">58</a>          assertThatThrownBy(() -&gt; builder.remove(<strong class="jxr_keyword">null</strong>)).isInstanceOf(IllegalArgumentException.<strong class="jxr_keyword">class</strong>);
+<a class="jxr_linenumber" name="L59" href="#L59">59</a>      }
+<a class="jxr_linenumber" name="L60" href="#L60">60</a>  }
+</pre>
+<hr/>
+<div id="footer">© 2011–2026 <a href="https://github.com/hazendaz/">hazendaz</a></div>
+</body>
+</html>

@@ -75,8 +75,8 @@ abstract class AnnotatedCallableImpl&lt;X, Y extends Member&gt; extends Annotate
 <span class="fc" id="L75">                builder.addAll(parameterAnnotations.get(i));</span>
             }
 <span class="fc" id="L77">            Type over = null;</span>
-<span class="pc bpc" id="L78" title="1 of 2 branches missed.">            if (parameterTypeOverrides != null) {</span>
-<span class="nc" id="L79">                over = parameterTypeOverrides.get(i);</span>
+<span class="fc bfc" id="L78" title="All 2 branches covered.">            if (parameterTypeOverrides != null) {</span>
+<span class="fc" id="L79">                over = parameterTypeOverrides.get(i);</span>
             }
 <span class="fc" id="L81">            AnnotatedParameterImpl&lt;X&gt; p = new AnnotatedParameterImpl&lt;&gt;(callable, parameterTypes[i], i, builder.create(),</span>
                     genericTypes[i], over);

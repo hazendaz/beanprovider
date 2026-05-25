@@ -57,8 +57,8 @@ class AnnotationBuilder {
      * @return this
      */
     public AnnotationBuilder add(Annotation annotation) {
-<span class="pc bpc" id="L60" title="1 of 2 branches missed.">        if (annotation == null) {</span>
-<span class="nc" id="L61">            throw new IllegalArgumentException(&quot;annotation parameter must not be null&quot;);</span>
+<span class="fc bfc" id="L60" title="All 2 branches covered.">        if (annotation == null) {</span>
+<span class="fc" id="L61">            throw new IllegalArgumentException(&quot;annotation parameter must not be null&quot;);</span>
         }
 <span class="fc" id="L63">        annotationSet.add(annotation);</span>
 <span class="fc" id="L64">        annotationMap.put(annotation.annotationType(), annotation);</span>
@@ -74,8 +74,8 @@ class AnnotationBuilder {
      * @return this
      */
     public AnnotationBuilder remove(Class&lt;? extends Annotation&gt; annotationType) {
-<span class="pc bpc" id="L77" title="1 of 2 branches missed.">        if (annotationType == null) {</span>
-<span class="nc" id="L78">            throw new IllegalArgumentException(&quot;annotationType parameter must not be null&quot;);</span>
+<span class="fc bfc" id="L77" title="All 2 branches covered.">        if (annotationType == null) {</span>
+<span class="fc" id="L78">            throw new IllegalArgumentException(&quot;annotationType parameter must not be null&quot;);</span>
         }
 
 <span class="fc" id="L81">        Iterator&lt;Annotation&gt; it = annotationSet.iterator();</span>
@@ -107,10 +107,10 @@ class AnnotationBuilder {
      * @return this
      */
     public AnnotationBuilder addAll(Collection&lt;Annotation&gt; annotations) {
-<span class="nc bnc" id="L110" title="All 2 branches missed.">        for (Annotation annotation : annotations) {</span>
-<span class="nc" id="L111">            add(annotation);</span>
-<span class="nc" id="L112">        }</span>
-<span class="nc" id="L113">        return this;</span>
+<span class="fc bfc" id="L110" title="All 2 branches covered.">        for (Annotation annotation : annotations) {</span>
+<span class="fc" id="L111">            add(annotation);</span>
+<span class="fc" id="L112">        }</span>
+<span class="fc" id="L113">        return this;</span>
     }
 
     /**
@@ -137,10 +137,10 @@ class AnnotationBuilder {
      * @return this
      */
     public AnnotationBuilder addAll(AnnotatedElement element) {
-<span class="nc bnc" id="L140" title="All 2 branches missed.">        for (Annotation a : element.getAnnotations()) {</span>
-<span class="nc" id="L141">            add(a);</span>
+<span class="fc bfc" id="L140" title="All 2 branches covered.">        for (Annotation a : element.getAnnotations()) {</span>
+<span class="fc" id="L141">            add(a);</span>
         }
-<span class="nc" id="L143">        return this;</span>
+<span class="fc" id="L143">        return this;</span>
     }
 
     /**
@@ -154,7 +154,7 @@ class AnnotationBuilder {
      * Simple check for an annotation.
      */
     public boolean isAnnotationPresent(Class&lt;?&gt; annotationType) {
-<span class="nc" id="L157">        return annotationMap.containsKey(annotationType);</span>
+<span class="fc" id="L157">        return annotationMap.containsKey(annotationType);</span>
     }
 
     /**
@@ -162,7 +162,7 @@ class AnnotationBuilder {
      */
     @Override
     public String toString() {
-<span class="nc" id="L165">        return annotationSet.toString();</span>
+<span class="fc" id="L165">        return annotationSet.toString();</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>
