@@ -40,7 +40,7 @@ class AnnotationBuilderTest {
 
         final AnnotationBuilder builder = new AnnotationBuilder();
         builder.add(new AlternativeLiteral());
-        builder.addAll(List.<Annotation>of(new NamedLiteral("collection")));
+        builder.addAll(List.<Annotation> of(new NamedLiteral("collection")));
         builder.addAll(source.create());
         builder.addAll(DeprecatedType.class);
         builder.remove(Deprecated.class);

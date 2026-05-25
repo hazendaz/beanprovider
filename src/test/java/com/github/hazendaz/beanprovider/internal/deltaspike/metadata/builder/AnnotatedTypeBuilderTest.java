@@ -33,17 +33,19 @@ import com.github.hazendaz.beanprovider.internal.deltaspike.literal.TypedLiteral
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.Observes;
-import jakarta.enterprise.inject.Any;
 import jakarta.enterprise.inject.Alternative;
+import jakarta.enterprise.inject.Any;
 import jakarta.enterprise.inject.Default;
 import jakarta.enterprise.inject.Typed;
 import jakarta.enterprise.inject.spi.AnnotatedConstructor;
+import jakarta.enterprise.inject.spi.AnnotatedField;
 import jakarta.enterprise.inject.spi.AnnotatedMethod;
 import jakarta.enterprise.inject.spi.AnnotatedParameter;
 import jakarta.enterprise.inject.spi.AnnotatedType;
+import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.util.AnnotationLiteral;
-import jakarta.inject.Named;
 import jakarta.inject.Inject;
+import jakarta.inject.Named;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -264,7 +266,8 @@ class AnnotatedTypeBuilderTest {
 
         assertThatThrownBy(() -> builder.overrideFieldType((Field) null, Object.class))
                 .isInstanceOf(IllegalArgumentException.class);
-        assertThatThrownBy(() -> builder.overrideFieldType(colorField, null)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> builder.overrideFieldType(colorField, null))
+                .isInstanceOf(IllegalArgumentException.class);
         assertThatThrownBy(() -> builder.overrideMethodParameterType(null, 0, Object.class))
                 .isInstanceOf(IllegalArgumentException.class);
         assertThatThrownBy(() -> builder.overrideMethodParameterType(observerMethod, 0, null))
