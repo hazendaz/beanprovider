@@ -298,7 +298,7 @@ public class AnnotatedTypeBuilder<X> {
         } else {
             if (methodParameters.get(method).get(position) == null) {
                 throw new IllegalArgumentException(
-                        String.format("parameter %s not present on method %s declared on class %s", method, position,
+                        "parameter %s not present on method %s declared on class %s".formatted(method, position,
                                 getJavaClass()));
             } else {
                 methodParameters.get(method).get(position).remove(annotationType);
@@ -496,7 +496,7 @@ public class AnnotatedTypeBuilder<X> {
      */
     public AnnotatedTypeBuilder<X> removeFromAll(Class<? extends Annotation> annotationType) {
         if (annotationType == null) {
-            throw new IllegalArgumentException(String.format("%s parameter must not be null", "annotationType"));
+            throw new IllegalArgumentException("%s parameter must not be null".formatted("annotationType"));
         }
         removeFromClass(annotationType);
         for (Map.Entry<Field, AnnotationBuilder> field : fields.entrySet()) {
@@ -552,7 +552,7 @@ public class AnnotatedTypeBuilder<X> {
      */
     public AnnotatedTypeBuilder<X> readFromType(AnnotatedType<X> type, boolean overwrite) {
         if (type == null) {
-            throw new IllegalArgumentException(String.format("%s parameter must not be null", "type"));
+            throw new IllegalArgumentException("%s parameter must not be null".formatted("type"));
         }
         if (javaClass == null || overwrite) {
             javaClass = type.getJavaClass();
@@ -624,7 +624,7 @@ public class AnnotatedTypeBuilder<X> {
      */
     public AnnotatedTypeBuilder<X> readFromType(Class<X> type, boolean overwrite) {
         if (type == null) {
-            throw new IllegalArgumentException(String.format("%s parameter must not be null", "type"));
+            throw new IllegalArgumentException("%s parameter must not be null".formatted("type"));
         }
         if (javaClass == null || overwrite) {
             javaClass = type;
@@ -787,10 +787,10 @@ public class AnnotatedTypeBuilder<X> {
      */
     public void overrideFieldType(Field field, Type type) {
         if (field == null) {
-            throw new IllegalArgumentException(String.format("%s parameter must not be null", "field"));
+            throw new IllegalArgumentException("%s parameter must not be null".formatted("field"));
         }
         if (type == null) {
-            throw new IllegalArgumentException(String.format("%s parameter must not be null", "type"));
+            throw new IllegalArgumentException("%s parameter must not be null".formatted("type"));
         }
         fieldTypes.put(field, type);
     }
@@ -825,10 +825,10 @@ public class AnnotatedTypeBuilder<X> {
      */
     public AnnotatedTypeBuilder<X> overrideMethodParameterType(Method method, int position, Type type) {
         if (method == null) {
-            throw new IllegalArgumentException(String.format("%s parameter must not be null", "method"));
+            throw new IllegalArgumentException("%s parameter must not be null".formatted("method"));
         }
         if (type == null) {
-            throw new IllegalArgumentException(String.format("%s parameter must not be null", "type"));
+            throw new IllegalArgumentException("%s parameter must not be null".formatted("type"));
         }
         if (methodParameterTypes.get(method) == null) {
             methodParameterTypes.put(method, new HashMap<>());
@@ -853,10 +853,10 @@ public class AnnotatedTypeBuilder<X> {
     public AnnotatedTypeBuilder<X> overrideConstructorParameterType(Constructor<X> constructor, int position,
             Type type) {
         if (constructor == null) {
-            throw new IllegalArgumentException(String.format("%s parameter must not be null", "constructor"));
+            throw new IllegalArgumentException("%s parameter must not be null".formatted("constructor"));
         }
         if (type == null) {
-            throw new IllegalArgumentException(String.format("%s parameter must not be null", "type"));
+            throw new IllegalArgumentException("%s parameter must not be null".formatted("type"));
         }
         if (constructorParameterTypes.get(constructor) == null) {
             constructorParameterTypes.put(constructor, new HashMap<>());
