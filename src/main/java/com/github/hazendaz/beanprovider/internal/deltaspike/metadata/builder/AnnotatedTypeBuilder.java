@@ -297,9 +297,8 @@ public class AnnotatedTypeBuilder<X> {
             throw new IllegalArgumentException("Method " + method + " not present on class " + getJavaClass());
         } else {
             if (methodParameters.get(method).get(position) == null) {
-                throw new IllegalArgumentException(
-                        "parameter %s not present on method %s declared on class %s".formatted(method, position,
-                                getJavaClass()));
+                throw new IllegalArgumentException("parameter %s not present on method %s declared on class %s"
+                        .formatted(method, position, getJavaClass()));
             } else {
                 methodParameters.get(method).get(position).remove(annotationType);
             }
