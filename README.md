@@ -2,8 +2,8 @@
 
 [![Java CI](https://github.com/hazendaz/beanprovider/actions/workflows/ci.yaml/badge.svg)](https://github.com/hazendaz/beanprovider/actions/workflows/ci.yaml)
 [![Coveralls](https://coveralls.io/repos/github/hazendaz/beanprovider/badge.svg?branch=master)](https://coveralls.io/github/hazendaz/beanprovider?branch=master)
-[![Maven Central](https://img.shields.io/maven-central/v/com.github.hazendaz.cdi/beanprovider)](https://central.sonatype.com/artifact/com.github.hazendaz.cdi/beanprovider)
-[![License](https://img.shields.io/github/license/hazendaz/beanprovider)](https://www.apache.org/licenses/LICENSE-2.0)
+[![Maven Central](https://img.shields.io/maven-central/v/com.github.hazendaz.cdi/beanprovider?logo=apache-maven&label=maven%20central)](https://central.sonatype.com/artifact/com.github.hazendaz.cdi/beanprovider)
+[![License](https://img.shields.io/github/license/hazendaz/beanprovider?logo=apache)](https://www.apache.org/licenses/LICENSE-2.0)
 
 ![hazendaz](src/site/resources/images/hazendaz-banner.jpg)
 
