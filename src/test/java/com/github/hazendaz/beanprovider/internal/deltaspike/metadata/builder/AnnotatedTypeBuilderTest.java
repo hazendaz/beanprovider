@@ -37,6 +37,7 @@ import jakarta.enterprise.inject.Alternative;
 import jakarta.enterprise.inject.Any;
 import jakarta.enterprise.inject.Default;
 import jakarta.enterprise.inject.Typed;
+import jakarta.enterprise.inject.spi.AnnotatedCallable;
 import jakarta.enterprise.inject.spi.AnnotatedConstructor;
 import jakarta.enterprise.inject.spi.AnnotatedField;
 import jakarta.enterprise.inject.spi.AnnotatedMethod;
@@ -47,9 +48,12 @@ import jakarta.enterprise.util.AnnotationLiteral;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.Member;
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -307,6 +311,233 @@ class AnnotatedTypeBuilderTest {
         }
         long end = System.nanoTime();
         System.out.println("Exeptions took ms " + TimeUnit.NANOSECONDS.toMillis(end - start));
+    }
+
+    @Named("everything")
+    static class Everything {
+        @Named("field")
+        private String value;
+
+        @Named("ctor")
+        public Everything(@Named("param") String value) {
+            this.value = value;
+        }
+
+        @Named("method")
+        public void doStuff(@Named("methodParam") String value) {
+            this.value = value;
+        }
+    }
+
+    private static final class FakeAnnotatedCallable implements AnnotatedCallable<Cat> {
+        @Override
+        public List<AnnotatedParameter<Cat>> getParameters() {
+            return List.of();
+        }
+
+        @Override
+        public AnnotatedType<Cat> getDeclaringType() {
+            return null;
+        }
+
+        @Override
+        public Member getJavaMember() {
+            try {
+                return Cat.class.getDeclaredField("color");
+            } catch (NoSuchFieldException e) {
+                throw new IllegalStateException(e);
+            }
+        }
+
+        @Override
+        public boolean isStatic() {
+            return false;
+        }
+
+        @Override
+        public Type getBaseType() {
+            return Object.class;
+        }
+
+        @Override
+        public Set<Type> getTypeClosure() {
+            return Set.of();
+        }
+
+        @Override
+        public <T extends Annotation> T getAnnotation(Class<T> annotationType) {
+            return null;
+        }
+
+        @Override
+        public Set<Annotation> getAnnotations() {
+            return Set.of();
+        }
+
+        @Override
+        public boolean isAnnotationPresent(Class<? extends Annotation> annotationType) {
+            return false;
+        }
+
+        @Override
+        public <T extends Annotation> Set<T> getAnnotations(Class<T> annotationType) {
+            return null;
+        }
+    }
+
+    private static final class FakeAnnotatedParameter implements AnnotatedParameter<Cat> {
+        @Override
+        public AnnotatedCallable<Cat> getDeclaringCallable() {
+            return new FakeAnnotatedCallable();
+        }
+
+        @Override
+        public int getPosition() {
+            return 0;
+        }
+
+        @Override
+        public Type getBaseType() {
+            return Object.class;
+        }
+
+        @Override
+        public Set<Type> getTypeClosure() {
+            return Set.of();
+        }
+
+        @Override
+        public <T extends Annotation> T getAnnotation(Class<T> annotationType) {
+            return null;
+        }
+
+        @Override
+        public Set<Annotation> getAnnotations() {
+            return Set.of();
+        }
+
+        @Override
+        public boolean isAnnotationPresent(Class<? extends Annotation> annotationType) {
+            return false;
+        }
+    }
+
+    @Test
+    void testAddToMembersCreatesNewEntryWhenNotPresent() throws Exception {
+        final AnnotatedTypeBuilder<Cat> builder = new AnnotatedTypeBuilder<>();
+        builder.setJavaClass(Cat.class);
+
+        final Field colorField = Cat.class.getDeclaredField("color");
+        builder.addToField(colorField, new NamedLiteral("first-color"));
+
+        final Method setupMethod = Cat.class.getDeclaredMethod("setup");
+        builder.addToMethod(setupMethod, new NamedLiteral("first-setup"));
+
+        final Constructor<Cat> noArgCtor = Cat.class.getConstructor();
+        builder.addToConstructor(noArgCtor, new NamedLiteral("first-ctor"));
+
+        final AnnotatedType<Cat> type = builder.create();
+
+        final AnnotatedField<? super Cat> updatedColorField = type.getFields().stream()
+                .filter(f -> "color".equals(f.getJavaMember().getName())).findFirst().orElseThrow();
+        assertThat(updatedColorField.getAnnotation(Named.class).value()).isEqualTo("first-color");
+    }
+
+    @Test
+    void testAddToMethodAndConstructorParameterCreatesNewEntries() throws Exception {
+        final AnnotatedTypeBuilder<Cat> builder = new AnnotatedTypeBuilder<>();
+        builder.setJavaClass(Cat.class);
+
+        final Method observerMethod = Cat.class.getDeclaredMethod("doSomeObservation", Cat.class, BeanManager.class);
+        builder.addToMethodParameter(observerMethod, 0, new AnyLiteral());
+
+        final Constructor<Cat> injectCtor = Cat.class.getConstructor(String.class, String.class);
+        builder.addToConstructorParameter(injectCtor, 0, new AnyLiteral());
+
+        assertThat(builder.create()).isNotNull();
+    }
+
+    @Test
+    void testRemoveFromMethodParameterWhenMethodMissing() throws Exception {
+        final AnnotatedTypeBuilder<Cat> builder = new AnnotatedTypeBuilder<>();
+        final Method setupMethod = Cat.class.getDeclaredMethod("setup");
+
+        assertThatThrownBy(() -> builder.removeFromMethodParameter(setupMethod, 0, Named.class))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    void testRemoveFromConstructorParameterWhenConstructorMissing() throws Exception {
+        final AnnotatedTypeBuilder<Cat> builder = new AnnotatedTypeBuilder<>();
+        final Constructor<Cat> noArgCtor = Cat.class.getConstructor();
+
+        assertThat(builder.removeFromConstructorParameter(noArgCtor, 0, Named.class)).isSameAs(builder);
+    }
+
+    @Test
+    void testRemoveFromConstructorParameterPositionMissingIsNoop() throws Exception {
+        final AnnotatedTypeBuilder<Cat> builder = new AnnotatedTypeBuilder<>();
+        builder.readFromType(Cat.class, true);
+        final Constructor<Cat> injectCtor = Cat.class.getConstructor(String.class, String.class);
+
+        // constructor is present, but the requested position doesn't exist -> no-op, no exception
+        assertThat(builder.removeFromConstructorParameter(injectCtor, 99, Named.class)).isSameAs(builder);
+    }
+
+    @Test
+    void testParameterOnNonMethodNonConstructorMemberThrows() {
+        final AnnotatedParameter<Cat> fakeParameter = new FakeAnnotatedParameter();
+
+        assertThatThrownBy(() -> new AnnotatedTypeBuilder<Cat>().removeFromParameter(fakeParameter, Named.class))
+                .isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> new AnnotatedTypeBuilder<Cat>().addToParameter(fakeParameter, new AnyLiteral()))
+                .isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> new AnnotatedTypeBuilder<Cat>().overrideParameterType(fakeParameter, Object.class))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    void testOverrideParameterTypeSecondCallReusesExistingMap() throws Exception {
+        final AnnotatedTypeBuilder<Cat> builder = new AnnotatedTypeBuilder<>();
+        builder.setJavaClass(Cat.class);
+
+        final Method observerMethod = Cat.class.getDeclaredMethod("doSomeObservation", Cat.class, BeanManager.class);
+        builder.overrideMethodParameterType(observerMethod, 0, Object.class);
+        // second call on the same method must reuse the already-created map entry
+        builder.overrideMethodParameterType(observerMethod, 1, BeanManager.class);
+
+        final Constructor<Cat> injectCtor = Cat.class.getConstructor(String.class, String.class);
+        builder.overrideConstructorParameterType(injectCtor, 0, Object.class);
+        // second call on the same constructor must reuse the already-created map entry
+        builder.overrideConstructorParameterType(injectCtor, 1, Object.class);
+
+        assertThat(builder.create()).isNotNull();
+    }
+
+    @Test
+    void testReadFromTypeClassOverwriteFalseCoversAllElementBranches() {
+        final AnnotatedTypeBuilder<Everything> builder = new AnnotatedTypeBuilder<>();
+        // first pass: overwrite=false, nothing present yet -> every annotation gets added
+        builder.readFromType(Everything.class, false);
+        // second pass: overwrite=false, every annotation already present -> every branch now skips
+        builder.readFromType(Everything.class, false);
+
+        final AnnotatedType<Everything> type = builder.create();
+        assertThat(type.getAnnotation(Named.class).value()).isEqualTo("everything");
+    }
+
+    @Test
+    void testReadFromAnnotatedTypeTwiceOverwritesExistingAnnotation() {
+        final AnnotatedType<Cat> sourceType = new AnnotatedTypeBuilder<Cat>().readFromType(Cat.class).create();
+
+        final AnnotatedTypeBuilder<Cat> builder = new AnnotatedTypeBuilder<>();
+        builder.readFromType(sourceType, true);
+        // reading again with overwrite=true while the annotation is already present exercises the
+        // overwriteExisting branch in mergeAnnotationsOnElement
+        builder.readFromType(sourceType, true);
+
+        final AnnotatedType<Cat> type = builder.create();
+        assertThat(type.getAnnotation(Named.class).value()).isEqualTo("cat");
     }
 
 }
