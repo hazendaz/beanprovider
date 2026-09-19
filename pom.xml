@@ -63,7 +63,7 @@
 
         <!-- Dependencies -->
         <assertj.version>3.27.7</assertj.version>
-        <cdi.version>4.1.0</cdi.version>
+        <cdi.version>5.0.0</cdi.version>
         <deltaspike.version>2.0.1</deltaspike.version>
         <junit.version>6.1.3</junit.version>
         <weld.version>5.0.3.Final</weld.version>
