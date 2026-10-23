@@ -34,13 +34,41 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Implementation of {@link AnnotatedCallable}
+ * Implementation of {@link AnnotatedCallable}.
+ *
+ * @param <X>
+ *            the generic type
+ * @param <Y>
+ *            the generic type
  */
 abstract class AnnotatedCallableImpl<X, Y extends Member> extends AnnotatedMemberImpl<X, Y>
         implements AnnotatedCallable<X> {
 
+    /** The parameters. */
     private final List<AnnotatedParameter<X>> parameters;
 
+    /**
+     * Instantiates a new annotated callable impl.
+     *
+     * @param declaringType
+     *            the declaring type
+     * @param member
+     *            the member
+     * @param memberType
+     *            the member type
+     * @param parameterTypes
+     *            the parameter types
+     * @param genericTypes
+     *            the generic types
+     * @param annotations
+     *            the annotations
+     * @param parameterAnnotations
+     *            the parameter annotations
+     * @param genericType
+     *            the generic type
+     * @param parameterTypeOverrides
+     *            the parameter type overrides
+     */
     protected AnnotatedCallableImpl(AnnotatedType<X> declaringType, Y member, Class<?> memberType,
             Class<?>[] parameterTypes, Type[] genericTypes, AnnotationStore annotations,
             Map<Integer, AnnotationStore> parameterAnnotations, Type genericType,
@@ -58,11 +86,39 @@ abstract class AnnotatedCallableImpl<X, Y extends Member> extends AnnotatedMembe
         return Collections.unmodifiableList(parameters);
     }
 
+    /**
+     * Gets the parameter.
+     *
+     * @param index
+     *            the index
+     *
+     * @return the parameter
+     */
     public AnnotatedParameter<X> getParameter(int index) {
         return parameters.get(index);
 
     }
 
+    /**
+     * Gets the annotated parameters.
+     *
+     * @param <X>
+     *            the generic type
+     * @param <Y>
+     *            the generic type
+     * @param callable
+     *            the callable
+     * @param parameterTypes
+     *            the parameter types
+     * @param genericTypes
+     *            the generic types
+     * @param parameterAnnotations
+     *            the parameter annotations
+     * @param parameterTypeOverrides
+     *            the parameter type overrides
+     *
+     * @return the annotated parameters
+     */
     private static <X, Y extends Member> List<AnnotatedParameter<X>> getAnnotatedParameters(
             AnnotatedCallableImpl<X, Y> callable, Class<?>[] parameterTypes, Type[] genericTypes,
             Map<Integer, AnnotationStore> parameterAnnotations, Map<Integer, Type> parameterTypeOverrides) {

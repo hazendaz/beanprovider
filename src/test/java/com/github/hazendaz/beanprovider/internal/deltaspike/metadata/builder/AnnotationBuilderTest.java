@@ -18,13 +18,22 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
+/**
+ * The Class AnnotationBuilderTest.
+ */
 class AnnotationBuilderTest {
 
+    /**
+     * The Class DeprecatedType.
+     */
     @Deprecated
     static class DeprecatedType {
         // marker class
     }
 
+    /**
+     * Default annotation store is empty.
+     */
     @Test
     void defaultAnnotationStoreIsEmpty() {
         final AnnotationStore store = new AnnotationStore();
@@ -33,6 +42,9 @@ class AnnotationBuilderTest {
         assertThat(store.getAnnotation(Named.class)).isNull();
     }
 
+    /**
+     * Annotation builder supports all mutation paths.
+     */
     @Test
     void annotationBuilderSupportsAllMutationPaths() {
         final AnnotationBuilder source = new AnnotationBuilder();
@@ -51,6 +63,9 @@ class AnnotationBuilderTest {
         assertThat(builder.toString()).contains("source");
     }
 
+    /**
+     * Null inputs are rejected.
+     */
     @Test
     void nullInputsAreRejected() {
         final AnnotationBuilder builder = new AnnotationBuilder();

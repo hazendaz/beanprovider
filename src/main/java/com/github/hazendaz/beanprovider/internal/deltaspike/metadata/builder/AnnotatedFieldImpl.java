@@ -30,12 +30,24 @@ import java.lang.reflect.Type;
 
 /**
  * Implementation of {@link AnnotatedField} to be used in CDI life cycle events and
- * {@link org.apache.deltaspike.core.util.metadata.builder.AnnotatedTypeBuilder}.
+ * {@link com.github.hazendaz.beanprovider.internal.deltaspike.metadata.builder.AnnotatedTypeBuilder}.
+ *
+ * @param <X>
+ *            the generic type
  */
 class AnnotatedFieldImpl<X> extends AnnotatedMemberImpl<X, Field> implements AnnotatedField<X> {
 
     /**
      * Constructor.
+     *
+     * @param declaringType
+     *            the declaring type
+     * @param field
+     *            the field
+     * @param annotations
+     *            the annotations
+     * @param overriddenType
+     *            the overridden type
      */
     AnnotatedFieldImpl(AnnotatedType<X> declaringType, Field field, AnnotationStore annotations, Type overriddenType) {
         super(declaringType, field, field.getType(), annotations, field.getGenericType(), overriddenType);

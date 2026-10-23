@@ -28,40 +28,91 @@ import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
+/**
+ * The Class Cat.
+ */
 @Named("cat")
 public class Cat {
+
+    /** The color. */
     private String color;
+
+    /** The gender. */
     private String gender;
 
+    /**
+     * Instantiates a new cat.
+     */
     public Cat() {
     }
 
+    /**
+     * Instantiates a new cat.
+     *
+     * @param color
+     *            the color
+     * @param gender
+     *            the gender
+     */
     @Inject
     public Cat(String color, String gender) {
         this.color = color;
         this.gender = gender;
     }
 
+    /**
+     * Setup.
+     */
     @PostConstruct
     public void setup() {
     }
 
+    /**
+     * Gets the color.
+     *
+     * @return the color
+     */
     public String getColor() {
         return color;
     }
 
+    /**
+     * Sets the color.
+     *
+     * @param color
+     *            the new color
+     */
     public void setColor(String color) {
         this.color = color;
     }
 
+    /**
+     * Gets the gender.
+     *
+     * @return the gender
+     */
     public String getGender() {
         return gender;
     }
 
+    /**
+     * Sets the gender.
+     *
+     * @param gender
+     *            the new gender
+     */
     public void setGender(String gender) {
         this.gender = gender;
     }
 
+    /**
+     * Do some observation.
+     *
+     * @param cat
+     *            the cat
+     * @param beanManager
+     *            the bean manager
+     */
     protected void doSomeObservation(@Observes Cat cat, BeanManager beanManager) {
         // whoah, someone fires cats around ^^
         // at least it tests parameter scanning ;)

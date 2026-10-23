@@ -29,14 +29,26 @@ import jakarta.inject.Named;
  * Literal for {@link jakarta.inject.Named} qualifier.
  */
 public class NamedLiteral extends AnnotationLiteral<Named> implements Named {
+
+    /** The Constant serialVersionUID. */
     private static final long serialVersionUID = -1457223276475846060L;
 
+    /** The value. */
     private final String value;
 
+    /**
+     * Instantiates a new named literal.
+     *
+     * @param value
+     *            the value
+     */
     public NamedLiteral(String value) {
         this.value = value;
     }
 
+    /**
+     * Instantiates a new named literal.
+     */
     public NamedLiteral() {
         value = "";
     }

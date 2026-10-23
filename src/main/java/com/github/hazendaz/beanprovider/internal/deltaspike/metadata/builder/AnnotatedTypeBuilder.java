@@ -45,20 +45,40 @@ import org.apache.deltaspike.core.util.ReflectionUtils;
  * or type has been added all of annotations can be modified: constructor, parameter, class, method and fields.
  * <p>
  * The AnnotatedTypeBuilder is not thread safe and shall not be used concurrently!
+ *
+ * @param <X>
+ *            the generic type
  */
 public class AnnotatedTypeBuilder<X> {
+
+    /** The java class. */
     private Class<X> javaClass;
+
+    /** The type annotations. */
     private final AnnotationBuilder typeAnnotations;
 
+    /** The constructors. */
     private final Map<Constructor<?>, AnnotationBuilder> constructors;
+
+    /** The constructor parameters. */
     private final Map<Constructor<?>, Map<Integer, AnnotationBuilder>> constructorParameters;
+
+    /** The constructor parameter types. */
     private final Map<Constructor<?>, Map<Integer, Type>> constructorParameterTypes;
 
+    /** The fields. */
     private final Map<Field, AnnotationBuilder> fields;
+
+    /** The field types. */
     private final Map<Field, Type> fieldTypes;
 
+    /** The methods. */
     private final Map<Method, AnnotationBuilder> methods;
+
+    /** The method parameters. */
     private final Map<Method, Map<Integer, AnnotationBuilder>> methodParameters;
+
+    /** The method parameter types. */
     private final Map<Method, Map<Integer, Type>> methodParameterTypes;
 
     /**
@@ -87,6 +107,8 @@ public class AnnotatedTypeBuilder<X> {
      * @param annotation
      *            the annotation instance to add
      *
+     * @return the annotated type builder
+     *
      * @throws IllegalArgumentException
      *             if the annotation is null
      */
@@ -96,10 +118,12 @@ public class AnnotatedTypeBuilder<X> {
     }
 
     /**
-     * Remove an annotation from the type
+     * Remove an annotation from the type.
      *
      * @param annotationType
      *            the annotation type to remove
+     *
+     * @return the annotated type builder
      *
      * @throws IllegalArgumentException
      *             if the annotationType
@@ -116,6 +140,8 @@ public class AnnotatedTypeBuilder<X> {
      *            the field to add the annotation to
      * @param annotation
      *            the annotation to add
+     *
+     * @return the annotated type builder
      *
      * @throws IllegalArgumentException
      *             if the annotation is null
@@ -136,6 +162,8 @@ public class AnnotatedTypeBuilder<X> {
      * @param annotation
      *            the annotation to add
      *
+     * @return the annotated type builder
+     *
      * @throws IllegalArgumentException
      *             if the annotation is null
      */
@@ -150,6 +178,8 @@ public class AnnotatedTypeBuilder<X> {
      *            the field to remove the annotation from
      * @param annotationType
      *            the annotation type to remove
+     *
+     * @return the annotated type builder
      *
      * @throws IllegalArgumentException
      *             if the annotationType is null or if the field is not currently declared on the type
@@ -171,6 +201,8 @@ public class AnnotatedTypeBuilder<X> {
      * @param annotationType
      *            the annotation type to remove
      *
+     * @return the annotated type builder
+     *
      * @throws IllegalArgumentException
      *             if the annotationType is null or if the field is not currently declared on the type
      */
@@ -186,6 +218,8 @@ public class AnnotatedTypeBuilder<X> {
      *            the method to add the annotation to
      * @param annotation
      *            the annotation to add
+     *
+     * @return the annotated type builder
      *
      * @throws IllegalArgumentException
      *             if the annotation is null
@@ -206,6 +240,8 @@ public class AnnotatedTypeBuilder<X> {
      * @param annotation
      *            the annotation to add
      *
+     * @return the annotated type builder
+     *
      * @throws IllegalArgumentException
      *             if the annotation is null
      */
@@ -220,6 +256,8 @@ public class AnnotatedTypeBuilder<X> {
      *            the method to remove the annotation from
      * @param annotationType
      *            the annotation type to remove
+     *
+     * @return the annotated type builder
      *
      * @throws IllegalArgumentException
      *             if the annotationType is null or if the method is not currently declared on the type
@@ -241,6 +279,8 @@ public class AnnotatedTypeBuilder<X> {
      * @param annotationType
      *            the annotation type to remove
      *
+     * @return the annotated type builder
+     *
      * @throws IllegalArgumentException
      *             if the annotationType is null or if the method is not currently declared on the type
      */
@@ -259,6 +299,8 @@ public class AnnotatedTypeBuilder<X> {
      *            the position of the parameter to add
      * @param annotation
      *            the annotation to add
+     *
+     * @return the annotated type builder
      *
      * @throws IllegalArgumentException
      *             if the annotation is null
@@ -287,6 +329,8 @@ public class AnnotatedTypeBuilder<X> {
      * @param annotationType
      *            the annotation type to remove
      *
+     * @return the annotated type builder
+     *
      * @throws IllegalArgumentException
      *             if the annotationType is null, if the method is not currently declared on the type or if the
      *             parameter is not declared on the method
@@ -314,6 +358,8 @@ public class AnnotatedTypeBuilder<X> {
      * @param annotation
      *            the annotation to add
      *
+     * @return the annotated type builder
+     *
      * @throws IllegalArgumentException
      *             if the annotation is null
      */
@@ -333,6 +379,8 @@ public class AnnotatedTypeBuilder<X> {
      * @param annotation
      *            the annotation to add
      *
+     * @return the annotated type builder
+     *
      * @throws IllegalArgumentException
      *             if the annotation is null
      */
@@ -347,6 +395,8 @@ public class AnnotatedTypeBuilder<X> {
      *            the constructor to add the annotation to
      * @param annotationType
      *            the annotation to add
+     *
+     * @return the annotated type builder
      *
      * @throws IllegalArgumentException
      *             if the annotationType is null or if the constructor is not currently declared on the type
@@ -367,6 +417,8 @@ public class AnnotatedTypeBuilder<X> {
      * @param annotationType
      *            the annotation to add
      *
+     * @return the annotated type builder
+     *
      * @throws IllegalArgumentException
      *             if the annotationType is null, if the annotation does not exist on the type or if the constructor is
      *             not currently declared on the type
@@ -386,6 +438,8 @@ public class AnnotatedTypeBuilder<X> {
      *            the position of the parameter to add
      * @param annotation
      *            the annotation to add
+     *
+     * @return the annotated type builder
      *
      * @throws IllegalArgumentException
      *             if the annotation is null
@@ -415,6 +469,8 @@ public class AnnotatedTypeBuilder<X> {
      * @param annotationType
      *            the annotation type to remove
      *
+     * @return the annotated type builder
+     *
      * @throws IllegalArgumentException
      *             if the annotationType is null, if the constructor is not currently declared on the type or if the
      *             parameter is not declared on the constructor
@@ -435,6 +491,8 @@ public class AnnotatedTypeBuilder<X> {
      *            the parameter to remove the annotation from
      * @param annotationType
      *            the annotation type to remove
+     *
+     * @return the annotated type builder
      *
      * @throws IllegalArgumentException
      *             if the annotationType is null, if the callable which declares the parameter is not currently declared
@@ -465,6 +523,8 @@ public class AnnotatedTypeBuilder<X> {
      * @param annotation
      *            the annotation to add
      *
+     * @return the annotated type builder
+     *
      * @throws IllegalArgumentException
      *             if the annotation is null or if the parameter is not declared on either a constructor or a method
      */
@@ -489,6 +549,8 @@ public class AnnotatedTypeBuilder<X> {
      *
      * @param annotationType
      *            the type of annotation to remove
+     *
+     * @return the annotated type builder
      *
      * @throws IllegalArgumentException
      *             if the annotationType is null
@@ -529,6 +591,8 @@ public class AnnotatedTypeBuilder<X> {
      * @param type
      *            the type to read from
      *
+     * @return the annotated type builder
+     *
      * @throws IllegalArgumentException
      *             if type is null
      */
@@ -545,6 +609,8 @@ public class AnnotatedTypeBuilder<X> {
      *            the type to read from
      * @param overwrite
      *            if true, the read annotation will replace any existing annotation
+     *
+     * @return the annotated type builder
      *
      * @throws IllegalArgumentException
      *             if type is null
@@ -605,6 +671,8 @@ public class AnnotatedTypeBuilder<X> {
      * @param type
      *            the type to read from
      *
+     * @return the annotated type builder
+     *
      * @throws IllegalArgumentException
      *             if type is null
      */
@@ -620,6 +688,8 @@ public class AnnotatedTypeBuilder<X> {
      *            the type to read from
      * @param overwrite
      *            if true, the read annotation will replace any existing annotation
+     *
+     * @return the annotated type builder
      */
     public AnnotatedTypeBuilder<X> readFromType(Class<X> type, boolean overwrite) {
         if (type == null) {
@@ -717,6 +787,16 @@ public class AnnotatedTypeBuilder<X> {
         return this;
     }
 
+    /**
+     * Merge annotations on element.
+     *
+     * @param annotated
+     *            the annotated
+     * @param overwriteExisting
+     *            the overwrite existing
+     * @param typeAnnotations
+     *            the type annotations
+     */
     protected void mergeAnnotationsOnElement(Annotated annotated, boolean overwriteExisting,
             AnnotationBuilder typeAnnotations) {
         for (Annotation annotation : annotated.getAnnotations()) {
@@ -734,6 +814,8 @@ public class AnnotatedTypeBuilder<X> {
     /**
      * Create an {@link AnnotatedType}. Any public members present on the underlying class and not overridden by the
      * builder will be automatically added.
+     *
+     * @return the annotated type
      */
     public AnnotatedType<X> create() {
         Map<Constructor<?>, Map<Integer, AnnotationStore>> constructorParameterAnnotations = new HashMap<>();
@@ -774,7 +856,7 @@ public class AnnotatedTypeBuilder<X> {
     }
 
     /**
-     * Override the declared type of a field
+     * Override the declared type of a field.
      *
      * @param field
      *            the field to override the type on
@@ -795,7 +877,7 @@ public class AnnotatedTypeBuilder<X> {
     }
 
     /**
-     * Override the declared type of a field
+     * Override the declared type of a field.
      *
      * @param field
      *            the field to override the type on
@@ -810,7 +892,7 @@ public class AnnotatedTypeBuilder<X> {
     }
 
     /**
-     * Override the declared type of a method parameter
+     * Override the declared type of a method parameter.
      *
      * @param method
      *            the method to override the parameter type on
@@ -818,6 +900,8 @@ public class AnnotatedTypeBuilder<X> {
      *            the position of the parameter to override the type on
      * @param type
      *            the new type of the parameter
+     *
+     * @return the annotated type builder
      *
      * @throws IllegalArgumentException
      *             if parameter or type is null
@@ -837,7 +921,7 @@ public class AnnotatedTypeBuilder<X> {
     }
 
     /**
-     * Override the declared type of a constructor parameter
+     * Override the declared type of a constructor parameter.
      *
      * @param constructor
      *            the constructor to override the parameter type on
@@ -845,6 +929,8 @@ public class AnnotatedTypeBuilder<X> {
      *            the position of the parameter to override the type on
      * @param type
      *            the new type of the parameter
+     *
+     * @return the annotated type builder
      *
      * @throws IllegalArgumentException
      *             if parameter or type is null
@@ -872,6 +958,8 @@ public class AnnotatedTypeBuilder<X> {
      * @param type
      *            the new type of the parameter
      *
+     * @return the annotated type builder
+     *
      * @throws IllegalArgumentException
      *             if parameter or type is null
      */
@@ -891,14 +979,21 @@ public class AnnotatedTypeBuilder<X> {
     }
 
     /**
-     * getter for the class
+     * getter for the class.
+     *
+     * @return the java class
      */
     public Class<X> getJavaClass() {
         return javaClass;
     }
 
     /**
-     * setter for the class
+     * setter for the class.
+     *
+     * @param javaClass
+     *            the java class
+     *
+     * @return the annotated type builder
      */
     public AnnotatedTypeBuilder<X> setJavaClass(Class<X> javaClass) {
         this.javaClass = javaClass;

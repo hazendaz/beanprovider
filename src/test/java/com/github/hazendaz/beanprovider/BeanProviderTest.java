@@ -22,24 +22,36 @@ import org.jboss.weld.junit5.WeldSetup;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+/**
+ * The Class BeanProviderTest.
+ */
 @EnableWeld
 class BeanProviderTest {
 
+    /** The context. */
     @Resource
     private WebServiceContext context;
 
+    /** The weld. */
     @WeldSetup
     public WeldInitiator weld = WeldInitiator.of(new Weld());
 
+    /** The dummy injection. */
     @PostInject
     private DummyInjection dummyInjection;
 
+    /**
+     * Inject fields empty map.
+     */
     @Test
     void injectFields_empty_map() {
         final Map<String, Class<? extends Annotation>> ignoreMap = new ConcurrentHashMap<>();
         Assertions.assertSame(this, BeanProvider.injectFields(this, ignoreMap));
     }
 
+    /**
+     * Inject fields full map.
+     */
     @Test
     void injectFields_full_map() {
         final Map<String, Class<? extends Annotation>> ignoreMap = new ConcurrentHashMap<>();
@@ -47,6 +59,9 @@ class BeanProviderTest {
         Assertions.assertSame(this, BeanProvider.injectFields(this, ignoreMap));
     }
 
+    /**
+     * Inject fields missing property.
+     */
     @Test
     void injectFields_missing_property() {
         final Map<String, Class<? extends Annotation>> ignoreMap = new ConcurrentHashMap<>();
@@ -54,17 +69,26 @@ class BeanProviderTest {
         Assertions.assertThrows(IllegalArgumentException.class, () -> BeanProvider.injectFields(this, ignoreMap));
     }
 
+    /**
+     * Inject fields null instance.
+     */
     @Test
     void injectFields_null_instance() {
         final Map<String, Class<? extends Annotation>> ignoreMap = new ConcurrentHashMap<>();
         Assertions.assertThrows(IllegalArgumentException.class, () -> BeanProvider.injectFields(null, ignoreMap));
     }
 
+    /**
+     * Inject fields null map.
+     */
     @Test
     void injectFields_null_map() {
         Assertions.assertThrows(IllegalArgumentException.class, () -> BeanProvider.injectFields(this, null));
     }
 
+    /**
+     * Inject fields null map key.
+     */
     @Test
     void injectFields_null_map_key() {
         final Map<String, Class<? extends Annotation>> ignoreMap = new HashMap<>();
@@ -72,6 +96,9 @@ class BeanProviderTest {
         Assertions.assertThrows(IllegalArgumentException.class, () -> BeanProvider.injectFields(this, ignoreMap));
     }
 
+    /**
+     * Inject fields null map property.
+     */
     @Test
     void injectFields_null_map_property() {
         final Map<String, Class<? extends Annotation>> ignoreMap = new HashMap<>();
@@ -79,6 +106,9 @@ class BeanProviderTest {
         Assertions.assertThrows(IllegalArgumentException.class, () -> BeanProvider.injectFields(this, ignoreMap));
     }
 
+    /**
+     * Inject fields successful injection.
+     */
     @Test
     void injectFields_successful_injection() {
         Assertions.assertNull(this.dummyInjection);
@@ -87,6 +117,12 @@ class BeanProviderTest {
         Assertions.assertEquals("DummyInjection", this.dummyInjection.getName());
     }
 
+    /**
+     * Private constructor test.
+     *
+     * @throws Exception
+     *             the exception
+     */
     @Test
     void privateConstructorTest() throws Exception {
         final Constructor<?>[] constructors = BeanProvider.class.getDeclaredConstructors();

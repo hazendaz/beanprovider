@@ -31,12 +31,37 @@ import java.lang.reflect.Type;
 
 /**
  * An implementation of {@link AnnotatedMember} to be used in CDI life cycle events and
- * {@link org.apache.deltaspike.core.util.metadata.builder.AnnotatedTypeBuilder}.
+ * {@link com.github.hazendaz.beanprovider.internal.deltaspike.metadata.builder.AnnotatedTypeBuilder}.
+ *
+ * @param <X>
+ *            the generic type
+ * @param <M>
+ *            the generic type
  */
 abstract class AnnotatedMemberImpl<X, M extends Member> extends AnnotatedImpl implements AnnotatedMember<X> {
+
+    /** The declaring type. */
     private final AnnotatedType<X> declaringType;
+
+    /** The java member. */
     private final M javaMember;
 
+    /**
+     * Instantiates a new annotated member impl.
+     *
+     * @param declaringType
+     *            the declaring type
+     * @param member
+     *            the member
+     * @param memberType
+     *            the member type
+     * @param annotations
+     *            the annotations
+     * @param genericType
+     *            the generic type
+     * @param overriddenType
+     *            the overridden type
+     */
     protected AnnotatedMemberImpl(AnnotatedType<X> declaringType, M member, Class<?> memberType,
             AnnotationStore annotations, Type genericType, Type overriddenType) {
         super(memberType, annotations, genericType, overriddenType);

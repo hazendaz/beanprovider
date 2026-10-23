@@ -29,14 +29,26 @@ import jakarta.enterprise.util.AnnotationLiteral;
  * Literal for {@link jakarta.enterprise.inject.Typed}
  */
 public class TypedLiteral extends AnnotationLiteral<Typed> implements Typed {
+
+    /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 6805980497117269525L;
 
+    /** The value. */
     private final Class<?>[] value;
 
+    /**
+     * Instantiates a new typed literal.
+     */
     public TypedLiteral() {
         value = new Class<?>[0];
     }
 
+    /**
+     * Instantiates a new typed literal.
+     *
+     * @param value
+     *            the value
+     */
     public TypedLiteral(Class<?>[] value) {
         this.value = value;
     }

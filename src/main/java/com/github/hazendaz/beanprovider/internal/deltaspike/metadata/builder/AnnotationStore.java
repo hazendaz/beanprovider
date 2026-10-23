@@ -32,27 +32,65 @@ import java.util.Set;
  * A helper class used to hold annotations on a type or member.
  */
 class AnnotationStore {
+
+    /** The annotation map. */
     private final Map<Class<? extends Annotation>, Annotation> annotationMap;
+
+    /** The annotation set. */
     private final Set<Annotation> annotationSet;
 
+    /**
+     * Instantiates a new annotation store.
+     *
+     * @param annotationMap
+     *            the annotation map
+     * @param annotationSet
+     *            the annotation set
+     */
     AnnotationStore(Map<Class<? extends Annotation>, Annotation> annotationMap, Set<Annotation> annotationSet) {
         this.annotationMap = annotationMap;
         this.annotationSet = unmodifiableSet(annotationSet);
     }
 
+    /**
+     * Instantiates a new annotation store.
+     */
     AnnotationStore() {
         annotationMap = Map.of();
         annotationSet = Set.of();
     }
 
+    /**
+     * Gets the annotation.
+     *
+     * @param <T>
+     *            the generic type
+     * @param annotationType
+     *            the annotation type
+     *
+     * @return the annotation
+     */
     <T extends Annotation> T getAnnotation(Class<T> annotationType) {
         return annotationType.cast(annotationMap.get(annotationType));
     }
 
+    /**
+     * Gets the annotations.
+     *
+     * @return the annotations
+     */
     Set<Annotation> getAnnotations() {
         return annotationSet;
     }
 
+    /**
+     * Checks if is annotation present.
+     *
+     * @param annotationType
+     *            the annotation type
+     *
+     * @return true, if is annotation present
+     */
     boolean isAnnotationPresent(Class<? extends Annotation> annotationType) {
         return annotationMap.containsKey(annotationType);
     }

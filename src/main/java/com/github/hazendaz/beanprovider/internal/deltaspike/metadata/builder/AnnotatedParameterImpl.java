@@ -29,14 +29,33 @@ import java.lang.reflect.Type;
 
 /**
  * Implementation of {@link AnnotatedParameter}.
+ *
+ * @param <X>
+ *            the generic type
  */
 class AnnotatedParameterImpl<X> extends AnnotatedImpl implements AnnotatedParameter<X> {
 
+    /** The position. */
     private final int position;
+
+    /** The declaring callable. */
     private final AnnotatedCallable<X> declaringCallable;
 
     /**
-     * Constructor
+     * Constructor.
+     *
+     * @param declaringCallable
+     *            the declaring callable
+     * @param type
+     *            the type
+     * @param position
+     *            the position
+     * @param annotations
+     *            the annotations
+     * @param genericType
+     *            the generic type
+     * @param typeOverride
+     *            the type override
      */
     AnnotatedParameterImpl(AnnotatedCallable<X> declaringCallable, Class<?> type, int position,
             AnnotationStore annotations, Type genericType, Type typeOverride) {

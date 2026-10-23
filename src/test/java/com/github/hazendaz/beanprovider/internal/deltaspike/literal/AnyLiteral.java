@@ -29,5 +29,7 @@ import jakarta.enterprise.util.AnnotationLiteral;
  * Literal for the {@link jakarta.enterprise.inject.Any} annotation.
  */
 public class AnyLiteral extends AnnotationLiteral<Any> implements Any {
+
+    /** The Constant serialVersionUID. */
     private static final long serialVersionUID = -8623640277155878657L;
 }

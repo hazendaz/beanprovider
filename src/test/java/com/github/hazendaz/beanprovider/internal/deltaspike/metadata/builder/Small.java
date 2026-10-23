@@ -28,9 +28,18 @@ import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
+/**
+ * The Interface Small.
+ */
 @Qualifier
 @Documented
 @Retention(value = RetentionPolicy.RUNTIME)
 public @interface Small {
+
+    /**
+     * Value.
+     *
+     * @return the string
+     */
     String value() default "";
 }

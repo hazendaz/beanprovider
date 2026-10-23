@@ -37,7 +37,11 @@ import java.util.Set;
  */
 // this class is intentionally made package scope
 class AnnotationBuilder {
+
+    /** The annotation map. */
     private final Map<Class<? extends Annotation>, Annotation> annotationMap;
+
+    /** The annotation set. */
     private final Set<Annotation> annotationSet;
 
     /**
@@ -99,7 +103,7 @@ class AnnotationBuilder {
     }
 
     /**
-     * Adds all annotations from the given collection
+     * Adds all annotations from the given collection.
      *
      * @param annotations
      *            collection of annotations to be added
@@ -145,6 +149,13 @@ class AnnotationBuilder {
 
     /**
      * Getter.
+     *
+     * @param <T>
+     *            the generic type
+     * @param anType
+     *            the an type
+     *
+     * @return the annotation
      */
     public <T extends Annotation> T getAnnotation(Class<T> anType) {
         return (T) annotationMap.get(anType);
@@ -152,6 +163,11 @@ class AnnotationBuilder {
 
     /**
      * Simple check for an annotation.
+     *
+     * @param annotationType
+     *            the annotation type
+     *
+     * @return true, if is annotation present
      */
     public boolean isAnnotationPresent(Class<?> annotationType) {
         return annotationMap.containsKey(annotationType);

@@ -59,10 +59,10 @@ public final class BeanProvider {
      * Attention: The resulting instance isn't managed by CDI; only fields annotated with {@link Inject} (or marked with
      * {@link PostInject} and then synthesized to {@link Inject}) get initialized.
      *
-     * @param instance
-     *            current instance (required)
      * @param <T>
      *            current type
+     * @param instance
+     *            current instance (required)
      * @param ignoreMap
      *            map of field names to annotation types which should be removed from those fields (required)
      *
@@ -135,6 +135,9 @@ public final class BeanProvider {
         return CDI.current().getBeanManager();
     }
 
+    /**
+     * Instantiates a new bean provider.
+     */
     private BeanProvider() {
         // this is a utility class which doesn't get instantiated.
     }

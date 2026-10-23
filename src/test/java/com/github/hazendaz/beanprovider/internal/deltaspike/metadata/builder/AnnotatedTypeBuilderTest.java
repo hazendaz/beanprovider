@@ -60,8 +60,14 @@ import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.Test;
 
+/**
+ * The Class AnnotatedTypeBuilderTest.
+ */
 class AnnotatedTypeBuilderTest {
 
+    /**
+     * Test type level annotation redefinition.
+     */
     @Test
     void testTypeLevelAnnotationRedefinition() {
         AnnotatedTypeBuilder<Cat> builder = new AnnotatedTypeBuilder<>();
@@ -129,6 +135,9 @@ class AnnotatedTypeBuilderTest {
         }
     }
 
+    /**
+     * Test addition of annotation.
+     */
     @Test
     void testAdditionOfAnnotation() {
         final AnnotatedTypeBuilder<Cat> builder = new AnnotatedTypeBuilder<>();
@@ -139,6 +148,12 @@ class AnnotatedTypeBuilderTest {
         assertThat(catAnnotatedType.isAnnotationPresent(Typed.class)).isTrue();
     }
 
+    /**
+     * Modify annotations on constructor parameter.
+     *
+     * @throws NoSuchMethodException
+     *             the no such method exception
+     */
     @Test
     void modifyAnnotationsOnConstructorParameter() throws NoSuchMethodException {
         final AnnotatedTypeBuilder<Cat> builder = new AnnotatedTypeBuilder<>();
@@ -161,6 +176,9 @@ class AnnotatedTypeBuilderTest {
         }
     }
 
+    /**
+     * Builds the valid annotation annotated type.
+     */
     @Test
     void buildValidAnnotationAnnotatedType() {
         final AnnotatedTypeBuilder<Small> builder = new AnnotatedTypeBuilder<Small>();
@@ -172,6 +190,9 @@ class AnnotatedTypeBuilderTest {
         assertThat(smallAnnotatedType.getFields()).isEmpty();
     }
 
+    /**
+     * Test ct with multiple params.
+     */
     @Test
     void testCtWithMultipleParams() {
         final AnnotatedTypeBuilder<TypeWithParamsInCt> builder = new AnnotatedTypeBuilder<TypeWithParamsInCt>();
@@ -183,6 +204,9 @@ class AnnotatedTypeBuilderTest {
         assertThat(newAt).isNotNull();
     }
 
+    /**
+     * Test enum with param.
+     */
     @Test
     void testEnumWithParam() {
         final AnnotatedTypeBuilder<EnumWithParams> builder = new AnnotatedTypeBuilder<EnumWithParams>();
@@ -194,6 +218,12 @@ class AnnotatedTypeBuilderTest {
         assertThat(newAt).isNotNull();
     }
 
+    /**
+     * Test overloads and type overrides.
+     *
+     * @throws Exception
+     *             the exception
+     */
     @Test
     void testOverloadsAndTypeOverrides() throws Exception {
         final AnnotatedType<Cat> sourceType = new AnnotatedTypeBuilder<Cat>().readFromType(Cat.class).create();
@@ -246,6 +276,12 @@ class AnnotatedTypeBuilderTest {
         assertThat(updatedInjectCtor.getParameters().get(1).getBaseType()).isEqualTo(Object.class);
     }
 
+    /**
+     * Test validation and missing members.
+     *
+     * @throws Exception
+     *             the exception
+     */
     @Test
     void testValidationAndMissingMembers() throws Exception {
         final AnnotatedTypeBuilder<Cat> builder = new AnnotatedTypeBuilder<>();
@@ -282,20 +318,48 @@ class AnnotatedTypeBuilderTest {
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
+    /**
+     * The Class TypeWithParamsInCt.
+     */
     public static class TypeWithParamsInCt {
+
+        /**
+         * Instantiates a new type with params in ct.
+         *
+         * @param a
+         *            the a
+         * @param b
+         *            the b
+         * @param c
+         *            the c
+         */
         public TypeWithParamsInCt(String a, int b, String c) {
             // all fine
         }
     }
 
+    /**
+     * The Enum EnumWithParams.
+     */
     public enum EnumWithParams {
+
+        /** The value. */
         VALUE("A");
 
+        /**
+         * Instantiates a new enum with params.
+         *
+         * @param val
+         *            the val
+         */
         EnumWithParams(String val) {
             // all fine
         }
     }
 
+    /**
+     * Test exception performance.
+     */
     @Test
     void testExceptionPerformance() {
         long start = System.nanoTime();
@@ -313,22 +377,42 @@ class AnnotatedTypeBuilderTest {
         System.out.println("Exeptions took ms " + TimeUnit.NANOSECONDS.toMillis(end - start));
     }
 
+    /**
+     * The Class Everything.
+     */
     @Named("everything")
     static class Everything {
+
+        /** The value. */
         @Named("field")
         private String value;
 
+        /**
+         * Instantiates a new everything.
+         *
+         * @param value
+         *            the value
+         */
         @Named("ctor")
         public Everything(@Named("param") String value) {
             this.value = value;
         }
 
+        /**
+         * Do stuff.
+         *
+         * @param value
+         *            the value
+         */
         @Named("method")
         public void doStuff(@Named("methodParam") String value) {
             this.value = value;
         }
     }
 
+    /**
+     * The Class FakeAnnotatedCallable.
+     */
     private static final class FakeAnnotatedCallable implements AnnotatedCallable<Cat> {
         @Override
         public List<AnnotatedParameter<Cat>> getParameters() {
@@ -385,6 +469,9 @@ class AnnotatedTypeBuilderTest {
         }
     }
 
+    /**
+     * The Class FakeAnnotatedParameter.
+     */
     private static final class FakeAnnotatedParameter implements AnnotatedParameter<Cat> {
         @Override
         public AnnotatedCallable<Cat> getDeclaringCallable() {
@@ -422,6 +509,12 @@ class AnnotatedTypeBuilderTest {
         }
     }
 
+    /**
+     * Test add to members creates new entry when not present.
+     *
+     * @throws Exception
+     *             the exception
+     */
     @Test
     void testAddToMembersCreatesNewEntryWhenNotPresent() throws Exception {
         final AnnotatedTypeBuilder<Cat> builder = new AnnotatedTypeBuilder<>();
@@ -443,6 +536,12 @@ class AnnotatedTypeBuilderTest {
         assertThat(updatedColorField.getAnnotation(Named.class).value()).isEqualTo("first-color");
     }
 
+    /**
+     * Test add to method and constructor parameter creates new entries.
+     *
+     * @throws Exception
+     *             the exception
+     */
     @Test
     void testAddToMethodAndConstructorParameterCreatesNewEntries() throws Exception {
         final AnnotatedTypeBuilder<Cat> builder = new AnnotatedTypeBuilder<>();
@@ -457,6 +556,12 @@ class AnnotatedTypeBuilderTest {
         assertThat(builder.create()).isNotNull();
     }
 
+    /**
+     * Test remove from method parameter when method missing.
+     *
+     * @throws Exception
+     *             the exception
+     */
     @Test
     void testRemoveFromMethodParameterWhenMethodMissing() throws Exception {
         final AnnotatedTypeBuilder<Cat> builder = new AnnotatedTypeBuilder<>();
@@ -466,6 +571,12 @@ class AnnotatedTypeBuilderTest {
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
+    /**
+     * Test remove from constructor parameter when constructor missing.
+     *
+     * @throws Exception
+     *             the exception
+     */
     @Test
     void testRemoveFromConstructorParameterWhenConstructorMissing() throws Exception {
         final AnnotatedTypeBuilder<Cat> builder = new AnnotatedTypeBuilder<>();
@@ -474,6 +585,12 @@ class AnnotatedTypeBuilderTest {
         assertThat(builder.removeFromConstructorParameter(noArgCtor, 0, Named.class)).isSameAs(builder);
     }
 
+    /**
+     * Test remove from constructor parameter position missing is noop.
+     *
+     * @throws Exception
+     *             the exception
+     */
     @Test
     void testRemoveFromConstructorParameterPositionMissingIsNoop() throws Exception {
         final AnnotatedTypeBuilder<Cat> builder = new AnnotatedTypeBuilder<>();
@@ -484,6 +601,9 @@ class AnnotatedTypeBuilderTest {
         assertThat(builder.removeFromConstructorParameter(injectCtor, 99, Named.class)).isSameAs(builder);
     }
 
+    /**
+     * Test parameter on non method non constructor member throws.
+     */
     @Test
     void testParameterOnNonMethodNonConstructorMemberThrows() {
         final AnnotatedParameter<Cat> fakeParameter = new FakeAnnotatedParameter();
@@ -496,6 +616,12 @@ class AnnotatedTypeBuilderTest {
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
+    /**
+     * Test override parameter type second call reuses existing map.
+     *
+     * @throws Exception
+     *             the exception
+     */
     @Test
     void testOverrideParameterTypeSecondCallReusesExistingMap() throws Exception {
         final AnnotatedTypeBuilder<Cat> builder = new AnnotatedTypeBuilder<>();
@@ -514,6 +640,9 @@ class AnnotatedTypeBuilderTest {
         assertThat(builder.create()).isNotNull();
     }
 
+    /**
+     * Test read from type class overwrite false covers all element branches.
+     */
     @Test
     void testReadFromTypeClassOverwriteFalseCoversAllElementBranches() {
         final AnnotatedTypeBuilder<Everything> builder = new AnnotatedTypeBuilder<>();
@@ -526,6 +655,9 @@ class AnnotatedTypeBuilderTest {
         assertThat(type.getAnnotation(Named.class).value()).isEqualTo("everything");
     }
 
+    /**
+     * Test read from annotated type twice overwrites existing annotation.
+     */
     @Test
     void testReadFromAnnotatedTypeTwiceOverwritesExistingAnnotation() {
         final AnnotatedType<Cat> sourceType = new AnnotatedTypeBuilder<Cat>().readFromType(Cat.class).create();

@@ -39,7 +39,7 @@ import java.util.Set;
 
 /**
  * An implementation of {@link AnnotatedType} to be used in CDI life cycle events and
- * {@link org.apache.deltaspike.core.util.metadata.builder.AnnotatedTypeBuilder}.
+ * {@link com.github.hazendaz.beanprovider.internal.deltaspike.metadata.builder.AnnotatedTypeBuilder}.
  */
 class AnnotatedTypeImpl<X> extends AnnotatedImpl implements AnnotatedType<X> {
 
@@ -51,7 +51,7 @@ class AnnotatedTypeImpl<X> extends AnnotatedImpl implements AnnotatedType<X> {
 
     /**
      * We make sure that there is a NewAnnotatedMember for every public method/field/constructor
-     * <p/>
+     * <p>
      * If annotation have been added to other methods as well we add them to
      */
     AnnotatedTypeImpl(Class<X> clazz, AnnotationStore typeAnnotations, Map<Field, AnnotationStore> fieldAnnotations,

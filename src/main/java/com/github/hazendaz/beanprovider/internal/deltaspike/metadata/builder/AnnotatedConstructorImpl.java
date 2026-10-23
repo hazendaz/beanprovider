@@ -30,12 +30,27 @@ import java.util.Map;
 
 /**
  * Implementation of {@link AnnotatedConstructor} to be used in
- * {@link org.apache.deltaspike.core.util.metadata.builder.AnnotatedTypeBuilder} and other CDI life cycle events.
+ * {@link com.github.hazendaz.beanprovider.internal.deltaspike.metadata.builder.AnnotatedTypeBuilder} and other CDI life
+ * cycle events.
+ *
+ * @param <X>
+ *            the generic type
  */
 class AnnotatedConstructorImpl<X> extends AnnotatedCallableImpl<X, Constructor<X>> implements AnnotatedConstructor<X> {
 
     /**
-     * Constructor
+     * Constructor.
+     *
+     * @param type
+     *            the type
+     * @param constructor
+     *            the constructor
+     * @param annotations
+     *            the annotations
+     * @param parameterAnnotations
+     *            the parameter annotations
+     * @param typeOverrides
+     *            the type overrides
      */
     AnnotatedConstructorImpl(AnnotatedTypeImpl<X> type, Constructor<?> constructor, AnnotationStore annotations,
             Map<Integer, AnnotationStore> parameterAnnotations, Map<Integer, Type> typeOverrides) {
@@ -44,6 +59,14 @@ class AnnotatedConstructorImpl<X> extends AnnotatedCallableImpl<X, Constructor<X
                 getGenericArray(constructor), annotations, parameterAnnotations, null, typeOverrides);
     }
 
+    /**
+     * Gets the generic array.
+     *
+     * @param constructor
+     *            the constructor
+     *
+     * @return the generic array
+     */
     private static Type[] getGenericArray(Constructor<?> constructor) {
         Type[] genericTypes = constructor.getGenericParameterTypes();
         // for inner classes genericTypes and parameterTypes can be different

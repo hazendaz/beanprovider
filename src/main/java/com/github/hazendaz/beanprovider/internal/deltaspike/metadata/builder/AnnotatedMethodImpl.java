@@ -31,11 +31,26 @@ import java.util.Map;
 
 /**
  * Implementation of {@link AnnotatedMethod} to be used in CDI life cycle events and
- * {@link org.apache.deltaspike.core.util.metadata.builder.AnnotatedTypeBuilder}.
+ * {@link com.github.hazendaz.beanprovider.internal.deltaspike.metadata.builder.AnnotatedTypeBuilder}.
+ *
+ * @param <X>
+ *            the generic type
  */
 class AnnotatedMethodImpl<X> extends AnnotatedCallableImpl<X, Method> implements AnnotatedMethod<X> {
+
     /**
      * Constructor.
+     *
+     * @param type
+     *            the type
+     * @param method
+     *            the method
+     * @param annotations
+     *            the annotations
+     * @param parameterAnnotations
+     *            the parameter annotations
+     * @param parameterTypeOverrides
+     *            the parameter type overrides
      */
     AnnotatedMethodImpl(AnnotatedType<X> type, Method method, AnnotationStore annotations,
             Map<Integer, AnnotationStore> parameterAnnotations, Map<Integer, Type> parameterTypeOverrides) {

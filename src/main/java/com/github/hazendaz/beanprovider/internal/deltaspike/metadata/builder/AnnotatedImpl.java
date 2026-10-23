@@ -36,10 +36,27 @@ import org.apache.deltaspike.core.util.HierarchyDiscovery;
  */
 abstract class AnnotatedImpl implements Annotated {
 
+    /** The type. */
     private final Type type;
+
+    /** The type closure. */
     private final Set<Type> typeClosure;
+
+    /** The annotations. */
     private final AnnotationStore annotations;
 
+    /**
+     * Instantiates a new annotated impl.
+     *
+     * @param type
+     *            the type
+     * @param annotations
+     *            the annotations
+     * @param genericType
+     *            the generic type
+     * @param overriddenType
+     *            the overridden type
+     */
     protected AnnotatedImpl(Class<?> type, AnnotationStore annotations, Type genericType, Type overriddenType) {
         if (overriddenType == null) {
             if (genericType != null) {

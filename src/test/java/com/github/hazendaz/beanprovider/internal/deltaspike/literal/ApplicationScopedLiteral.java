@@ -26,8 +26,10 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.util.AnnotationLiteral;
 
 /**
- * Literal for {@link ApplicationScoped}
+ * Literal for {@link ApplicationScoped}.
  */
 public class ApplicationScopedLiteral extends AnnotationLiteral<ApplicationScoped> implements ApplicationScoped {
+
+    /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 6582580975876369665L;
 }
