@@ -40,19 +40,49 @@ import java.util.Set;
 /**
  * An implementation of {@link AnnotatedType} to be used in CDI life cycle events and
  * {@link com.github.hazendaz.beanprovider.internal.deltaspike.metadata.builder.AnnotatedTypeBuilder}.
+ *
+ * @param <X>
+ *            the generic type
  */
 class AnnotatedTypeImpl<X> extends AnnotatedImpl implements AnnotatedType<X> {
 
+    /** The constructors. */
     private final Set<AnnotatedConstructor<X>> constructors;
+
+    /** The fields. */
     private final Set<AnnotatedField<? super X>> fields;
+
+    /** The methods. */
     private final Set<AnnotatedMethod<? super X>> methods;
 
+    /** The java class. */
     private final Class<X> javaClass;
 
     /**
      * We make sure that there is a NewAnnotatedMember for every public method/field/constructor
      * <p>
-     * If annotation have been added to other methods as well we add them to
+     * If annotation have been added to other methods as well we add them to.
+     *
+     * @param clazz
+     *            the clazz
+     * @param typeAnnotations
+     *            the type annotations
+     * @param fieldAnnotations
+     *            the field annotations
+     * @param methodAnnotations
+     *            the method annotations
+     * @param methodParameterAnnotations
+     *            the method parameter annotations
+     * @param constructorAnnotations
+     *            the constructor annotations
+     * @param constructorParameterAnnotations
+     *            the constructor parameter annotations
+     * @param fieldTypes
+     *            the field types
+     * @param methodParameterTypes
+     *            the method parameter types
+     * @param constructorParameterTypes
+     *            the constructor parameter types
      */
     AnnotatedTypeImpl(Class<X> clazz, AnnotationStore typeAnnotations, Map<Field, AnnotationStore> fieldAnnotations,
             Map<Method, AnnotationStore> methodAnnotations,
