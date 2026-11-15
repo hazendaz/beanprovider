@@ -52,8 +52,9 @@ class AnnotatedConstructorImpl<X> extends AnnotatedCallableImpl<X, Constructor<X
      * @param typeOverrides
      *            the type overrides
      */
-    AnnotatedConstructorImpl(AnnotatedTypeImpl<X> type, Constructor<?> constructor, AnnotationStore annotations,
-            Map<Integer, AnnotationStore> parameterAnnotations, Map<Integer, Type> typeOverrides) {
+    AnnotatedConstructorImpl(final AnnotatedTypeImpl<X> type, final Constructor<?> constructor,
+            final AnnotationStore annotations, final Map<Integer, AnnotationStore> parameterAnnotations,
+            final Map<Integer, Type> typeOverrides) {
 
         super(type, (Constructor<X>) constructor, constructor.getDeclaringClass(), constructor.getParameterTypes(),
                 getGenericArray(constructor), annotations, parameterAnnotations, null, typeOverrides);
@@ -67,7 +68,7 @@ class AnnotatedConstructorImpl<X> extends AnnotatedCallableImpl<X, Constructor<X
      *
      * @return the generic array
      */
-    private static Type[] getGenericArray(Constructor<?> constructor) {
+    private static Type[] getGenericArray(final Constructor<?> constructor) {
         Type[] genericTypes = constructor.getGenericParameterTypes();
         // for inner classes genericTypes and parameterTypes can be different
         // length, this is a hack to fix this.

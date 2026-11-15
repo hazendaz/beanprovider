@@ -52,8 +52,8 @@ class AnnotatedMethodImpl<X> extends AnnotatedCallableImpl<X, Method> implements
      * @param parameterTypeOverrides
      *            the parameter type overrides
      */
-    AnnotatedMethodImpl(AnnotatedType<X> type, Method method, AnnotationStore annotations,
-            Map<Integer, AnnotationStore> parameterAnnotations, Map<Integer, Type> parameterTypeOverrides) {
+    AnnotatedMethodImpl(final AnnotatedType<X> type, final Method method, final AnnotationStore annotations,
+            final Map<Integer, AnnotationStore> parameterAnnotations, final Map<Integer, Type> parameterTypeOverrides) {
         super(type, method, method.getReturnType(), method.getParameterTypes(), method.getGenericParameterTypes(),
                 annotations, parameterAnnotations, method.getGenericReturnType(), parameterTypeOverrides);
     }

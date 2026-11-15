@@ -57,8 +57,8 @@ class AnnotatedParameterImpl<X> extends AnnotatedImpl implements AnnotatedParame
      * @param typeOverride
      *            the type override
      */
-    AnnotatedParameterImpl(AnnotatedCallable<X> declaringCallable, Class<?> type, int position,
-            AnnotationStore annotations, Type genericType, Type typeOverride) {
+    AnnotatedParameterImpl(final AnnotatedCallable<X> declaringCallable, final Class<?> type, final int position,
+            final AnnotationStore annotations, final Type genericType, final Type typeOverride) {
         super(type, annotations, genericType, typeOverride);
         this.declaringCallable = declaringCallable;
         this.position = position;
