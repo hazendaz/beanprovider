@@ -188,9 +188,8 @@ public class AnnotatedTypeBuilder<X> {
             final Class<? extends Annotation> annotationType) {
         if (fields.get(field) == null) {
             throw new IllegalArgumentException("field " + field + " not present on class " + getJavaClass());
-        } else {
-            fields.get(field).remove(annotationType);
         }
+		fields.get(field).remove(annotationType);
         return this;
     }
 
@@ -267,9 +266,8 @@ public class AnnotatedTypeBuilder<X> {
             final Class<? extends Annotation> annotationType) {
         if (methods.get(method) == null) {
             throw new IllegalArgumentException("Method " + method + " not present on class" + getJavaClass());
-        } else {
-            methods.get(method).remove(annotationType);
         }
+		methods.get(method).remove(annotationType);
         return this;
     }
 
@@ -510,10 +508,9 @@ public class AnnotatedTypeBuilder<X> {
             @SuppressWarnings("unchecked")
             final Constructor<X> constructor = (Constructor<X>) parameter.getDeclaringCallable().getJavaMember();
             return removeFromConstructorParameter(constructor, parameter.getPosition(), annotationType);
-        } else {
-            throw new IllegalArgumentException("Cannot remove from parameter " + parameter
-                    + " - cannot operate on member " + parameter.getDeclaringCallable().getJavaMember());
         }
+		throw new IllegalArgumentException("Cannot remove from parameter " + parameter
+		        + " - cannot operate on member " + parameter.getDeclaringCallable().getJavaMember());
     }
 
     /**
@@ -540,10 +537,9 @@ public class AnnotatedTypeBuilder<X> {
             @SuppressWarnings("unchecked")
             final Constructor<X> constructor = (Constructor<X>) parameter.getDeclaringCallable().getJavaMember();
             return addToConstructorParameter(constructor, parameter.getPosition(), annotation);
-        } else {
-            throw new IllegalArgumentException("Cannot remove from parameter " + parameter
-                    + " - cannot operate on member " + parameter.getDeclaringCallable().getJavaMember());
         }
+		throw new IllegalArgumentException("Cannot remove from parameter " + parameter
+		        + " - cannot operate on member " + parameter.getDeclaringCallable().getJavaMember());
     }
 
     /**
@@ -978,10 +974,9 @@ public class AnnotatedTypeBuilder<X> {
             @SuppressWarnings("unchecked")
             final Constructor<X> constructor = (Constructor<X>) parameter.getDeclaringCallable().getJavaMember();
             return overrideConstructorParameterType(constructor, parameter.getPosition(), type);
-        } else {
-            throw new IllegalArgumentException("Cannot remove from parameter " + parameter
-                    + " - cannot operate on member " + parameter.getDeclaringCallable().getJavaMember());
         }
+		throw new IllegalArgumentException("Cannot remove from parameter " + parameter
+		        + " - cannot operate on member " + parameter.getDeclaringCallable().getJavaMember());
     }
 
     /**
